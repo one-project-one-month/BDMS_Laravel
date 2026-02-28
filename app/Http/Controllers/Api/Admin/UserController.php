@@ -105,12 +105,17 @@ class UserController extends Controller
     public function deactivate($id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::with('donor')->findOrFail($id);
+
             $user->update(['is_active' => false]);
+
+            if ($user->donor) {
+                $user->donor->update(['is_active' => false]);
+            }
 
             return $this->successResponse(
                 'User account has been deactivated successfully',
-                new UserResource($user),
+                new UserResource($user->load('donor')),
                 200
             );
         } catch (\Exception $e) {
