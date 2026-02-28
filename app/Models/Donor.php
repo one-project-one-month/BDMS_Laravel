@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Donor extends Model
 {
-    protected $fillable = ['user_id', 'nrc_no', 'blood_group', 'gender', 'address', 'date_of_birth', 'last_donation_date', 'total_donations', 'emergency_contact', 'emergency_phone'];
+    protected $fillable = ['user_id', 'nrc_no', 'blood_group', 'gender', 'address', 'is_active', 'date_of_birth', 'last_donation_date', 'total_donations', 'emergency_contact', 'emergency_phone'];
 
     public function user()
     {

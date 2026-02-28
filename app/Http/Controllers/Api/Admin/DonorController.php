@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Http\Controllers\Api\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Helpers\ApiResponse;
+use App\Http\Requests\Admin\DonorRequest;
+use App\Http\Resources\Api\Admin\DonorResource;
+use App\Models\Donor;
+use Illuminate\Http\Request;
+
+class DonorController extends Controller
+{
+    use ApiResponse;
+
+    public function index(Request $request)
+    {
+        $bloodGroup = $request->query('blood_group');
+        $query = Donor::with('user');
+
+        if ($bloodGroup) {
+            $query->where('blood_group', $bloodGroup);
+        }
+
+        $donors = $query->paginate(config('pagination.perPage'));
+
+        return $this->successResponse(
+            'Donors retrieved successfully',
+            $this->buildPaginatedResourceResponse(DonorResource::class, $donors),
+            200
+        );
+    }
+
+    public function store(DonorRequest $request)
+    {
+        try {
+            $donor = Donor::create($request->validated());
+
+            return $this->successResponse(
+                'Donor profile created successfully',
+                new DonorResource($donor->load('user')),
+                201
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $donor = Donor::with('user', 'hospital')->findOrFail($id);
+            return $this->successResponse('Donor details retrieved', new DonorResource($donor));
+        } catch (\Exception $e) {
+            return $this->errorResponse('Donor not found', 404);
+        }
+    }
+
+    public function update(DonorRequest $request, $id)
+    {
+        try {
+            $donor = Donor::findOrFail($id);
+            $donor->update($request->validated());
+
+            return $this->successResponse('Donor profile updated', new DonorResource($donor));
+        } catch (\Exception $e) {
+            return $this->errorResponse('Update failed: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $donor = Donor::findOrFail($id);
+            $donor->delete();
+
+            return $this->successResponse('Donor record deleted permanently', null);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Delete failed', 500);
+        }
+    }
+
+    public function deactivate($id)
+    {
+        try {
+            $donor = Donor::findOrFail($id);
+            $donor->update(['is_active' => false]);
+
+            return $this->successResponse('Donor account deactivated', new DonorResource($donor));
+        } catch (\Exception $e) {
+            return $this->errorResponse('Deactivation failed', 500);
+        }
+    }
+
+    public function activate($id)
+    {
+        try {
+            $donor = Donor::findOrFail($id);
+
+            if ($donor->is_active) {
+                return $this->errorResponse('This donor profile is already active.', 400);
+            }
+
+            $donor->update(['is_active' => true]);
+
+            return $this->successResponse(
+                'Donor profile has been activated successfully',
+                new DonorResource($donor->load('user'))
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+}

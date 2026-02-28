@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DonationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration {
             $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
             $table->string('donation_code')->unique();
             $table->integer('unit_donated')->default(1);
-            $table->enum('status', ['pending', 'rejected', 'approved', 'failed', 'completed'])->default('pending');
+            $table->enum('status', DonationStatus::values())->default(DonationStatus::PENDING->value);
             $table->date('donation_date');
             $table->string('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();

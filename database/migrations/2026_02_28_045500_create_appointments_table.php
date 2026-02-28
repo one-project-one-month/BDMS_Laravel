@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignId('request_id')->nullable()->constrained('blood_requests')->onDelete('set null');
             $table->enum('appointment_type', ['donation', 'request']);
             $table->date('appointment_date');
-            $table->enum('status', ['pending', 'cancelled', 'failed', 'completed'])->default('pending');
+            $table->enum('status', ['schaduled', 'cancelled', 'confirmed', 'completed'])->default('schaduled');
             $table->timestamps();
         });
     }

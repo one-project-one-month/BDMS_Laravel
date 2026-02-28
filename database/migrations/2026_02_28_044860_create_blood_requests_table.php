@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BloodGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,12 +16,12 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
             $table->string('patient_name');
-            $table->enum('blood_group', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
+            $table->enum('blood_group', BloodGroup::values());
             $table->integer('units_required');
             $table->string('contact_phone');
             $table->enum('urgency', ['low', 'medium', 'high', 'critical']);
             $table->date('required_date');
-            $table->enum('status', ['pending', 'cancelled', 'approved', 'rejected', 'fulfilled'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('notes')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('approved_at')->nullable();
