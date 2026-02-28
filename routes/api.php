@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/')->group(function () {
     Route::middleware(['auth:sanctum', 'Role.check:admin,staff'])->group(function () {
-        Route::resource('/users', UserController::class);
+        Route::patch('users/{id}/deactivate', [UserController::class, 'deactivate']);
+        Route::patch('users/{id}/activate', [UserController::class, 'activate']);
+        Route::apiResource('/users', UserController::class);
     });
 });

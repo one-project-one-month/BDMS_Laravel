@@ -46,7 +46,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            $user = User::find($id);
+            $user = User::findOrFail($id);
 
             if (!$user) {
                 return $this->errorResponse('User not found.', 404);
@@ -67,7 +67,7 @@ class UserController extends Controller
     public function update(UserRequest $request, $id)
     {
         try {
-            $user = User::find($id);
+            $user = User::findOrFail($id);
 
             $validated = $request->validated();
 
@@ -92,7 +92,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            $user = User::find($id);
+            $user = User::findOrFail($id);
 
             $user->delete();
 
@@ -100,5 +100,28 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse('Delete failed', 500);
         }
+    }
+
+    public function deactivate($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->update(['is_active' => false]);
+
+            return $this->successResponse(
+                'User account has been deactivated successfully',
+                new UserResource($user),
+                200
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Failed to deactivate user', 500);
+        }
+    }
+
+    public function activate($id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['is_active' => true]);
+        return $this->successResponse('User account is now active', new UserResource($user), 200);
     }
 }
