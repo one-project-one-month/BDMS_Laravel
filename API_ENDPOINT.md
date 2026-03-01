@@ -63,7 +63,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-## Blood Requests APIs
+## 🩸 Blood Requests APIs
 
 | Method | Endpoint               | Description               | Note |
 | ------ | ---------------------- | ------------------------- | ---- |
@@ -76,7 +76,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-## Appointments APIs
+## 📝 Appointments APIs
 
 | Method | Endpoint             | Description              | Note |
 | ------ | -------------------- | ------------------------ | ---- |
@@ -89,7 +89,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Medical Records APIs
+## 📊 Medical Records APIs
 
 | Method | Endpoint                | Description                | Note |
 | ------ | ----------------------- | -------------------------- | ---- |
@@ -102,7 +102,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Blood Inventories APIs
+## 📥 Blood Inventories APIs
 
 | Method | Endpoint                  | Description                 | Note |
 | ------ | ------------------------- | --------------------------- | ---- |
@@ -112,7 +112,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Announcements APIs
+## 📢 Announcements APIs
 
 | Method | Endpoint                         | Description              | Note                 |
 | ------ | -------------------------------- | ------------------------ | -------------------- |
@@ -126,7 +126,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  profiles APIs
+## 📄 Certificates APIs
 
 | Method | Endpoint             | Description             | Note |
 | ------ | -------------------- | ----------------------- | ---- |
@@ -140,7 +140,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 # User API Endpoints
 
-##  Profiles APIs
+## 🙍‍♂️ Profiles APIs
 
 | Method | Endpoint                 | Description         | Note |
 | ------ | ------------------------ | ------------------- | ---- |
@@ -151,7 +151,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Donations APIs
+## 🎉 Donations APIs
 
 | Method | Endpoint                   | Description              | Note |
 | ------ | -------------------------- | ------------------------ | ---- |
@@ -162,7 +162,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Blood Request APIs
+## 🧾 Blood Request APIs
 
 | Method | Endpoint                        | Description                   | Note |
 | ------ | ------------------------------- | ----------------------------- | ---- |
@@ -173,7 +173,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Apponitments APIs
+## 📝 Apponitments APIs
 
 | Method | Endpoint                      | Description                 | Note |
 | ------ | ----------------------------- | --------------------------- | ---- |
@@ -183,7 +183,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Blood Inventories APIs
+## 📤 Blood Inventories APIs
 
 | Method | Endpoint                    | Description     | Note |
 | ------ | --------------------------- | --------------- | ---- |
@@ -191,7 +191,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ---
 
-##  Certificates APIs
+## 🧾 Certificates APIs
 
 | Method | Endpoint                     | Description               | Note |
 | ------ | ---------------------------- | ------------------------- | ---- |
