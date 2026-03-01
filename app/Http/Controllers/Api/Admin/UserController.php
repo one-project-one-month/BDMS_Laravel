@@ -16,17 +16,27 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $role = $request->query('role');
+        try {
+            $roleName = $request->query('role');
 
-        $query = User::with('hospital');
+            $query = User::with(['hospital', 'role']);
 
-        if ($role) {
-            $query->where('role', $role);
+            if ($roleName) {
+                $query->whereHas('role', function ($q) use ($roleName) {
+                    $q->where('name', $roleName);
+                });
+            }
+
+            $users = $query->paginate(config('pagination.perPage'));
+
+            return $this->successResponse(
+                'User retrieved successfully',
+                $this->buildPaginatedResourceResponse(UserResource::class, $users),
+                200
+            );
+        } catch (\Exception $e) {
+            $this->errorResponse($e->getMessage(), 500);
         }
-
-        $users = $query->paginate(config('pagination.perPage'));
-
-        return $this->successResponse('User retrieved successfully', $this->buildPaginatedResourceResponse(UserResource::class, $users), 200);
     }
 
     public function store(UserRequest $request)
@@ -46,13 +56,13 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::find($id);
 
             if (!$user) {
                 return $this->errorResponse('User not found.', 404);
             }
 
-            $user->load('hospital');
+            $user->load('hospital', 'role');
 
             return $this->successResponse(
                 'User details retrieved successfully',
@@ -67,7 +77,11 @@ class UserController extends Controller
     public function update(UserRequest $request, $id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::find($id);
+
+            if (!$user) {
+                return $this->errorResponse('User not found.', 404);
+            }
 
             $validated = $request->validated();
 
@@ -92,7 +106,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::find($id);
+
+            if (!$user) {
+                return $this->errorResponse('User not found.', 404);
+            }
 
             $user->delete();
 
@@ -102,10 +120,53 @@ class UserController extends Controller
         }
     }
 
+    public function restore($id)
+    {
+        try {
+            $user = User::onlyTrashed()->findOrFail($id);
+            $user->restore();
+
+            return $this->successResponse(
+                'User restored successfully',
+                new UserResource($user),
+                200
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('User not found in trash or restore failed', 404);
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            $user = User::withTrashed()->findOrFail($id);
+            $user->forceDelete();
+
+            return $this->successResponse('User permanently deleted', null, 204);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Permanent delete failed', 500);
+        }
+    }
+
+    public function trashedIndex()
+    {
+        $users = User::onlyTrashed()->with('hospital')->paginate(config('pagination.perPage'));
+
+        return $this->successResponse(
+            'Trashed users retrieved successfully',
+            $this->buildPaginatedResourceResponse(UserResource::class, $users),
+            200
+        );
+    }
+
     public function deactivate($id)
     {
         try {
-            $user = User::with('donor')->findOrFail($id);
+            $user = User::with('donor')->find($id);
+
+            if (!$user) {
+                return $this->errorResponse('User not found.', 404);
+            }
 
             $user->update(['is_active' => false]);
 
@@ -125,8 +186,14 @@ class UserController extends Controller
 
     public function activate($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return $this->errorResponse('User not found.', 404);
+        }
+
         $user->update(['is_active' => true]);
+
         return $this->successResponse('User account is now active', new UserResource($user), 200);
     }
 }

@@ -14,4 +14,10 @@ Route::prefix('v1/')->group(function () {
         Route::patch('donors/{id}/activate', [UserController::class, 'activate']);
         Route::apiResource('donors', DonorController::class);
     });
+
+    Route::middleware(['auth:sanctum', 'Role.check:admin'])->group(function () {
+        Route::get('users/trashed', [UserController::class, 'trashedIndex']);
+        Route::post('users/{id}/restore', [UserController::class, 'restore']);
+        Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete']);
+    });
 });

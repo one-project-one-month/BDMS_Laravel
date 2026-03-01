@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Api\Admin;
 
-use App\Http\Resources\Api\Admin\DonorResource;
 use App\Http\Resources\Api\Admin\HospitalResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,15 +17,14 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'roleId' => $this->role_id,
+            'role' => new RoleResource($this->whenLoaded('role')),
             'hospitalId' => $this->hospital_id,
-            'user_name' => $this->user_name,
-            'phone' => $this->phone,
-            'role' => $this->role,
-            'isActive' => $this->is_active,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
             'hospital' => new HospitalResource($this->whenLoaded('hospital')),
-            'donorInfo' => new DonorResource($this->whenLoaded('donor')),
+            'user_name' => $this->user_name,
+            'email' => $this->email,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }
