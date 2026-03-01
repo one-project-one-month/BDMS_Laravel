@@ -26,13 +26,13 @@ class DonorRequest extends FormRequest
         $donorId = $this->route('id') ? $this->route('id')->id : null;
 
         return [
-            'user_id' => 'required|exists:users,id|unique:donors,user_id,' . $donorId,
-            'blood_group' => 'required|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
+            'userId' => 'required|exists:users,id|unique:donors,user_id,' . $donorId,
+            'bloodGroup' => 'required|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
             'gender' => 'required|in:male,female,other',
             'address' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'last_donation_date' => 'nullable|date',
-            'is_active' => 'boolean',
+            'dateOfBirth' => 'required|date',
+            'lastDonationDate' => 'nullable|date',
+            'isActive' => 'boolean',
         ];
     }
 
