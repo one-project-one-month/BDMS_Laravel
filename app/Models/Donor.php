@@ -2,15 +2,41 @@
 
 namespace App\Models;
 
+use App\Enums\BloodGroup;
+use App\Enums\Gender;
 use App\Models\Appointment;
 use App\Models\Donation;
 use App\Models\DonorRequestMatch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Donor extends Model
 {
-    protected $fillable = ['user_id', 'nrc_no', 'blood_group', 'gender', 'address', 'is_active', 'date_of_birth', 'last_donation_date', 'total_donations', 'emergency_contact', 'emergency_phone'];
+    use SoftDeletes;
+    protected $fillable = [
+        'user_id',
+        'nrc_no',
+        'date_of_birth',
+        'gender',
+        'blood_group',
+        'weight',
+        'last_donation_date',
+        'remarks',
+        'emergency_contact',
+        'emergency_phone',
+        'address',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'last_donation_date' => 'date',
+        'weight' => 'decimal:2',
+        'is_active' => 'boolean',
+        'gender' => Gender::class,
+        'blood_group' => BloodGroup::class,
+    ];
 
     public function user()
     {

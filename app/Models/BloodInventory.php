@@ -2,16 +2,48 @@
 
 namespace App\Models;
 
+use App\Enums\BloodGroup;
+use App\Enums\BloodInventoryStatus;
+use App\Models\BloodRequest;
+use App\Models\Donation;
 use App\Models\Hospital;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BloodInventory extends Model
 {
-    protected $table = 'blood_inventory';
-    protected $fillable = ['hospital_id', 'blood_group', 'units_available', 'units_reserved', 'unit_total', 'expiry_date'];
+    use SoftDeletes;
+    protected $fillable = [
+        'donation_id',
+        'hospital_id',
+        'blood_group',
+        'units',
+        'collected_at',
+        'expired_at',
+        'status',
+        'blood_request_id',
+    ];
+
+    protected $casts = [
+        'collected_at' => 'date',
+        'expired_at' => 'date',
+        'units' => 'integer',
+        'blood_group' => BloodGroup::class,
+        'status' => BloodInventoryStatus::class,
+    ];
+
+    public function donation()
+    {
+        return $this->belongsTo(Donation::class);
+    }
 
     public function hospital()
     {
         return $this->belongsTo(Hospital::class);
+    }
+
+    public function bloodRequest()
+    {
+        return $this->belongsTo(BloodRequest::class);
     }
 }

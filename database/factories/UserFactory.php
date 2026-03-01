@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -23,11 +22,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_name' => fake()->name(),
-            'phone' => fake()->phoneNumber(),
-            'password' => static::$password ??= Hash::make('password'),
-            'role' => 'user',
-            'is_active' => true
+            //
         ];
     }
 

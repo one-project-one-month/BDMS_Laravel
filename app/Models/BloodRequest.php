@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Enums\BloodGroup;
+use App\Enums\BloodRequestStatus;
+use App\Enums\Urgency;
 use App\Models\Appointment;
 use App\Models\Hospital;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BloodRequest extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'user_id',
         'hospital_id',
@@ -19,9 +24,18 @@ class BloodRequest extends Model
         'urgency',
         'required_date',
         'status',
-        'notes',
+        'reason',
         'approved_by',
-        'approved_at'
+        'approved_at',
+    ];
+
+    protected $casts = [
+        'required_date' => 'date',
+        'approved_at' => 'datetime',
+        'units_required' => 'integer',
+        'blood_group' => BloodGroup::class,
+        'urgency' => Urgency::class,
+        'status' => BloodRequestStatus::class,
     ];
 
     public function user()

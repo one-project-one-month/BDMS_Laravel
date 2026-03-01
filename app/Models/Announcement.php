@@ -2,15 +2,31 @@
 
 namespace App\Models;
 
-use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Announcement extends Model
 {
-    protected $fillable = ['user_id', 'title', 'content', 'is_active', 'expired_at'];
+    use SoftDeletes;
+    protected $fillable = [
+        'title',
+        'content',
+        'is_active',
+        'expired_at',
+    ];
 
-    public function author()
+    protected $casts = [
+        'is_active' => 'boolean',
+        'expired_at' => 'date',
+    ];
+
+    public function scopeActive(Builder $query): void
     {
-        return $this->belongsTo(User::class, 'user_id');
+        $query->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                    ->orWhere('expired_at', '>=', now()->toDateString());
+            });
     }
 }

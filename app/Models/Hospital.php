@@ -16,11 +16,17 @@ class Hospital extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
+        'name',
         'address',
         'phone',
         'email',
-        'is_verified',
-        'is_active'
+        'is_active',
+        'is_verified'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_verified' => 'boolean',
     ];
 
     public function users()
