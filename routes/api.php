@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AnnouncementController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,10 @@ Route::prefix('v1/')->group(function () {
         Route::patch('donors/{id}/deactivate', [UserController::class, 'deactivate']);
         Route::patch('donors/{id}/activate', [UserController::class, 'activate']);
         Route::apiResource('donors', DonorController::class);
+
+        Route::apiResource('announcements', AnnouncementController::class);
+        Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
+        Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
     });
 
     Route::middleware(['auth:sanctum', 'Role.check:admin'])->group(function () {
@@ -22,5 +27,8 @@ Route::prefix('v1/')->group(function () {
 
         Route::post('donors/{id}/restore', [DonorController::class, 'restore']);
         Route::delete('donors/{id}/force-delete', [DonorController::class, 'forceDelete']);
+
+        Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
+        Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
     });
 });

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             HospitalSeeder::class,
             UserSeeder::class,
+            AnnouncementSeeder::class,
         ]);
     }
 }
