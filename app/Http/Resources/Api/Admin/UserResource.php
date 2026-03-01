@@ -6,6 +6,20 @@ use App\Http\Resources\Api\Admin\HospitalResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ * schema="UserResource",
+ * title="User Resource",
+ * description="User model data wrapper",
+ * @OA\Property(property="id", type="integer", example=1),
+ * @OA\Property(property="hospitalId", type="integer", example=1),
+ * @OA\Property(property="userName", type="string", example="Aung Aung"),
+ * @OA\Property(property="email", type="string", format="email", example="aung@example.com"),
+ * @OA\Property(property="isActive", type="boolean", example=true),
+ * @OA\Property(property="createdAt", type="string", format="date-time", example="2026-03-01T10:00:00Z")
+ * )
+ */
+
 class UserResource extends JsonResource
 {
     /**
@@ -23,8 +37,8 @@ class UserResource extends JsonResource
             'hospital' => new HospitalResource($this->whenLoaded('hospital')),
             'user_name' => $this->user_name,
             'email' => $this->email,
-            'is_active' => $this->is_active,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'isActive' => $this->is_active,
+            'createdAt' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }

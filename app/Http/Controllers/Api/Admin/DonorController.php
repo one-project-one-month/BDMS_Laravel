@@ -13,6 +13,38 @@ class DonorController extends Controller
 {
     use ApiResponse;
 
+    /**
+     * @OA\Get(
+     * path="/api/v1/donors",
+     * summary="Get list of all blood donors",
+     * description="Returns a list of donors with optional filtering by blood group.",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="blood_group",
+     * in="query",
+     * description="Filter donors by blood group (e.g., A+, B-, O+)",
+     * required=false,
+     * @OA\Schema(type="string")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(
+     * type="array",
+     * @OA\Items(ref="#/components/schemas/DonorResource")
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthenticated"
+     * ),
+     * @OA\Response(
+     * response=403,
+     * description="Forbidden - Admin access required"
+     * )
+     * )
+     */
     public function index(Request $request)
     {
         $bloodGroup = $request->query('blood_group');

@@ -51,18 +51,20 @@ class UserController extends Controller
      * @OA\Post(
      * path="/api/v1/users",
      * summary="Create a new user",
+     *
      * description="Creates a new user account.",
      * tags={"Users"},
      * security={{"bearerAuth":{}}},
      * @OA\RequestBody(
      * required=true,
      * @OA\JsonContent(
-     * required={"hospitalId", "roleId", "userName", "email", "password", "role"},
+     * required={"hospitalId", "roleId", "userName", "email", "password", "is_active"},
+     * @OA\Property(property="hospitalId", type="number", example="1"),
+     * @OA\Property(property="roleId", type="number", example="3"),
      * @OA\Property(property="userName", type="string", example="John Doe"),
      * @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
      * @OA\Property(property="password", type="string", format="password", example="Password123"),
-     * @OA\Property(property="role", type="string", enum={"Admin", "Tenant", "Staff"}, example="Tenant"),
-     * @OA\Property(property="tenantId", type="integer", description="Required if role is Tenant", example=1)
+     * @OA\Property(property="isActive", type="boolean", example=true)
      * )
      * ),
      * @OA\Response(
