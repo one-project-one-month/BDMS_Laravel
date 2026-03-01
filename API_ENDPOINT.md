@@ -35,14 +35,16 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ## 👨‍🦱 Donor APIs
 
-| Method | Endpoint                  | Description       | Note |
-| ------ | ------------------------- | ----------------- | ---- |
-| GET    | `/donors`                 | List all donors   |      |
-| GET    | `/donors/{id}`            | Show donor detail |      |
-| POST   | `/donors`                 | New create donor  |      |
-| PUT    | `/donors/{id}`            | Update donor      |      |
-| DELETE | `/donors/{id}`            | Delete donor      |      |
-| PATCH  | `/donors/{id}/deactivate` | Deactivate donor  |      |
-| PATCH  | `/donors/{id}/activate`   | Activate donor    |      |
+| Method | Endpoint                    | Description              | Note       |
+| ------ | --------------------------- | ------------------------ | ---------- |
+| GET    | `/donors`                   | List all donors          |            |
+| GET    | `/donors/{id}`              | Show donor detail        |            |
+| POST   | `/donors`                   | New create donor         |            |
+| PUT    | `/donors/{id}`              | Update donor             |            |
+| DELETE | `/donors/{id}`              | Delete donor             |            |
+| PATCH  | `/donors/{id}/deactivate`   | Deactivate donor         |            |
+| PATCH  | `/donors/{id}/activate`     | Activate donor           |            |
+| GET    | `/donors/{id}/restore`      | Restore soft delete user | Admin Only |
+| GET    | `/donors/{id}/force-delete` | Force Delete user        | Admin Only |
 
 ---

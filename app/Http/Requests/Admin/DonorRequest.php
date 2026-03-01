@@ -27,13 +27,12 @@ class DonorRequest extends FormRequest
 
         return [
             'user_id' => 'required|exists:users,id|unique:donors,user_id,' . $donorId,
-            'nrc_no' => 'required|string|unique:donors,nrc_no,' . $donorId,
             'blood_group' => 'required|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
             'gender' => 'required|in:male,female,other',
             'address' => 'required|string',
             'date_of_birth' => 'required|date',
-            'emergency_contact' => 'required|string',
-            'emergency_phone' => 'required|string',
+            'last_donation_date' => 'nullable|date',
+            'is_active' => 'boolean',
         ];
     }
 

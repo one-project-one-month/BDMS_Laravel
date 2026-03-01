@@ -6,7 +6,6 @@ use App\Enums\BloodGroup;
 use App\Enums\Gender;
 use App\Models\Appointment;
 use App\Models\Donation;
-use App\Models\DonorRequestMatch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -51,10 +50,5 @@ class Donor extends Model
     public function donations()
     {
         return $this->hasMany(Donation::class);
-    }
-
-    public function matches()
-    {
-        return $this->hasMany(DonorRequestMatch::class);
     }
 }

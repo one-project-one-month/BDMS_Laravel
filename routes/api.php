@@ -19,5 +19,8 @@ Route::prefix('v1/')->group(function () {
         Route::get('users/trashed', [UserController::class, 'trashedIndex']);
         Route::post('users/{id}/restore', [UserController::class, 'restore']);
         Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete']);
+
+        Route::post('donors/{id}/restore', [DonorController::class, 'restore']);
+        Route::delete('donors/{id}/force-delete', [DonorController::class, 'forceDelete']);
     });
 });

@@ -49,7 +49,7 @@ class DonorController extends Controller
     public function show($id)
     {
         try {
-            $donor = Donor::with('user', 'hospital')->findOrFail($id);
+            $donor = Donor::with('user', 'donations')->findOrFail($id);
             return $this->successResponse('Donor details retrieved', new DonorResource($donor));
         } catch (\Exception $e) {
             return $this->errorResponse('Donor not found', 404);
@@ -77,6 +77,30 @@ class DonorController extends Controller
             return $this->successResponse('Donor record deleted permanently', null);
         } catch (\Exception $e) {
             return $this->errorResponse('Delete failed', 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            $donor = Donor::onlyTrashed()->findOrFail($id);
+            $donor->restore();
+
+            return $this->successResponse('Donor restored', new DonorResource($donor));
+        } catch (\Exception $e) {
+            $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            $donor = Donor::withTrashed()->findOrFail($id);
+            $donor->forceDelete();
+
+            return $this->successResponse('Donor permanently deleted', null, 204);
+        } catch (\Exception $e) {
+            $this->errorResponse($e->getMessage(), 500);
         }
     }
 
