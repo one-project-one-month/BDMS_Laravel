@@ -7,17 +7,20 @@ use App\Models\BloodInventory;
 use App\Models\BloodRequest;
 use App\Models\Donation;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Hospital extends Model
 {
+    use HasFactory;
+    use SoftDeletes;
     protected $fillable = [
-        'hospital_name',
         'address',
         'phone',
         'email',
-        'license_no',
-        'is_verified'
+        'is_verified',
+        'is_active'
     ];
 
     public function users()
