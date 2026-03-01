@@ -1,0 +1,86 @@
+<?php
+
+return [
+    'users' => [
+        'access-users',
+        'create-users',
+        'update-users',
+        'delete-users',
+        'view-users',
+    ],
+    'roles' => [
+        'access-roles',
+        'create-roles',
+        'update-roles',
+        'delete-roles',
+        'view-roles',
+    ],
+    'permissions' => [
+        'access-permissions',
+        'create-permissions',
+        'update-permissions',
+        'delete-permissions',
+        'view-permissions',
+    ],
+    'donors' => [
+        'access-donors',
+        'create-donors',
+        'update-donors',
+        'delete-donors',
+        'view-donors',
+    ],
+    'donations' => [
+        'access-donations',
+        'create-donations',
+        'update-donations',
+        'delete-donations',
+        'view-donations',
+    ],
+    'blood_requests' => [
+        'access-blood-requests',
+        'create-blood-requests',
+        'update-blood-requests',
+        'delete-blood-requests',
+        'view-blood-requests',
+    ],
+    'appointments' => [
+        'access-appointments',
+        'create-appointments',
+        'update-appointments',
+        'delete-appointments',
+        'view-appointments',
+    ],
+    'medical_records' => [
+        'access-medical-records',
+        'create-medical-records',
+        'update-medical-records',
+        'delete-medical-records',
+        'view-medical-records',
+    ],
+    'blood_inventories' => [
+        'access-blood-inventories',
+        'create-blood-inventories',
+        'update-blood-inventories',
+        'delete-blood-inventories',
+        'view-blood-inventories',
+    ],
+    'announcements' => [
+        'access-announcements',
+        'create-announcements',
+        'update-announcements',
+        'delete-announcements',
+        'view-announcements',
+    ],
+    'certificates' => [
+        'access-certificates',
+        'create-certificates',
+        'update-certificates',
+        'delete-certificates',
+        'view-certificates',
+    ],
+    'profile' => [
+        'access-profile',
+        'update-profile',
+        'view-profile',
+    ],
+];
