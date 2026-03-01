@@ -9,6 +9,13 @@ use App\Http\Resources\Api\Admin\DonorResource;
 use App\Models\Donor;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ * name="Donors",
+ * description="API Endpoints for managing donors"
+ * )
+ */
+
 class DonorController extends Controller
 {
     use ApiResponse;
@@ -63,6 +70,31 @@ class DonorController extends Controller
         );
     }
 
+    /**
+     * @OA\Post(
+     * path="/api/v1/donors",
+     * summary="Register a new donor",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * required={"userId", "blood_group", "gender", "age"},
+     * @OA\Property(property="userId", type="integer", example=5),
+     * @OA\Property(property="blood_group", type="string", example="O+"),
+     * @OA\Property(property="gender", type="string", example="male"),
+     * @OA\Property(property="age", type="integer", example=26),
+     * @OA\Property(property="lastDonation", type="string", format="date", example="2025-12-01"),
+     * @OA\Property(property="isActive", type="boolean", example=true)
+     * )
+     * ),
+     * @OA\Response(
+     * response=201,
+     * description="Donor created successfully",
+     * @OA\JsonContent(ref="#/components/schemas/DonorResource")
+     * )
+     * )
+     */
     public function store(DonorRequest $request)
     {
         try {
@@ -78,6 +110,27 @@ class DonorController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     * path="/api/v1/donors/{id}",
+     * summary="Display a specific donor",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="ID of donor to return",
+     * required=true,
+     * @OA\Schema(type="integer", example=1)
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(ref="#/components/schemas/DonorResource")
+     * ),
+     * @OA\Response(response=404, description="Donor not found")
+     * )
+     */
     public function show($id)
     {
         try {
@@ -88,6 +141,28 @@ class DonorController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     * path="/api/v1/donors/{id}",
+     * summary="Update an existing donor",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * @OA\Property(property="blood_group", type="string", example="A+"),
+     * @OA\Property(property="age", type="integer", example=27),
+     * @OA\Property(property="lastDonation", type="string", format="date", example="2026-02-15")
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Donor updated successfully",
+     * @OA\JsonContent(ref="#/components/schemas/DonorResource")
+     * )
+     * )
+     */
     public function update(DonorRequest $request, $id)
     {
         try {
@@ -100,6 +175,20 @@ class DonorController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     * path="/api/v1/donors/{id}",
+     * summary="Delete a donor record",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     * @OA\Response(
+     * response=200,
+     * description="Donor deleted successfully",
+     * @OA\JsonContent(@OA\Property(property="message", type="string", example="Donor removed."))
+     * )
+     * )
+     */
     public function destroy($id)
     {
         try {
@@ -136,6 +225,17 @@ class DonorController extends Controller
         }
     }
 
+    /**
+     * @OA\Patch(
+     * path="/api/v1/donors/{id}/deactivate",
+     * summary="Deactivate a donor",
+     * description="Disables the donor from being listed as available for donation.",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     * @OA\Response(response=200, description="Donor deactivated")
+     * )
+     */
     public function deactivate($id)
     {
         try {
@@ -148,6 +248,17 @@ class DonorController extends Controller
         }
     }
 
+    /**
+     * @OA\Patch(
+     * path="/api/v1/donors/{id}/activate",
+     * summary="Activate a donor",
+     * description="Re-enables the donor for the active donation pool.",
+     * tags={"Donors"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     * @OA\Response(response=200, description="Donor activated")
+     * )
+     */
     public function activate($id)
     {
         try {

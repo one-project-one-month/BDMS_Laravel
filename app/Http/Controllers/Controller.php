@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 /**
  * @OA\Info(
- * title="Blood Donation System Management API",
+ * title="Blood Donation Management System API",
  * version="1.0.0",
  * description="API documentation for Blood Donation Management System"
  * )

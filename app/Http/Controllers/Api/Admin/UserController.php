@@ -22,6 +22,43 @@ class UserController extends Controller
     use ApiResponse;
 
 
+    /**
+     * @OA\Get(
+     * path="/api/v1/users",
+     * summary="Get list of all users",
+     * description="Returns a collection of users. Can be filtered by role.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="role_id",
+     * in="query",
+     * description="Filter users by role (e.g., 1 for Admin, 2 for Staff, 3 for user)",
+     * required=false,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(
+     * property="data",
+     * type="array",
+     * @OA\Items(ref="#/components/schemas/UserResource")
+     * ),
+     * @OA\Property(property="message", type="string", example="Users retrieved successfully")
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthenticated"
+     * ),
+     * @OA\Response(
+     * response=403,
+     * description="Forbidden"
+     * )
+     * )
+     */
     public function index(Request $request)
     {
         try {
@@ -91,6 +128,40 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     * path="/api/v1/users/{id}",
+     * summary="Get specific user details",
+     * description="Returns the data of a single user by their ID.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="ID of the user to retrieve",
+     * required=true,
+     * @OA\Schema(type="integer", example=1)
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="User found",
+     * @OA\JsonContent(
+     * @OA\Property(property="data", ref="#/components/schemas/UserResource")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="User not found",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="User not found.")
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthenticated"
+     * )
+     * )
+     */
     public function show($id)
     {
         try {
@@ -112,6 +183,49 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     * path="/api/v1/users/{id}",
+     * summary="Update an existing user",
+     * description="Updates the user details for the given ID. Only provided fields will be updated.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="ID of the user to update",
+     * required=true,
+     * @OA\Schema(type="integer", example=1)
+     * ),
+     * @OA\RequestBody(
+     * required=true,
+     * description="Updated user data",
+     * @OA\JsonContent(
+     * @OA\Property(property="hospitalId", type="integer", example=1),
+     * @OA\Property(property="roleId", type="integer", example=2),
+     * @OA\Property(property="userName", type="string", example="minko_updated"),
+     * @OA\Property(property="email", type="string", format="email", example="updated@bloodlink.com"),
+     * @OA\Property(property="isActive", type="boolean", example=true)
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="User updated successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="User updated successfully"),
+     * @OA\Property(property="data", ref="#/components/schemas/UserResource")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="User not found"
+     * ),
+     * @OA\Response(
+     * response=422,
+     * description="Validation error"
+     * )
+     * )
+     */
     public function update(UserRequest $request, $id)
     {
         try {
@@ -141,6 +255,37 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     * path="/api/v1/users/{id}",
+     * summary="Delete a user",
+     * description="Deletes a specific user record from the system.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="ID of the user to delete",
+     * required=true,
+     * @OA\Schema(type="integer", example=1)
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="User deleted successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="User deleted successfully")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="User not found"
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthenticated"
+     * )
+     * )
+     */
     public function destroy($id)
     {
         try {
@@ -197,6 +342,38 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * @OA\Patch(
+     * path="/api/v1/users/{id}/deactivate",
+     * summary="Deactivate a user account",
+     * description="Sets the user's status to inactive.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="ID of the user to deactivate",
+     * required=true,
+     * @OA\Schema(type="integer", example=1)
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="User deactivated successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="User account has been deactivated."),
+     * @OA\Property(property="data", ref="#/components/schemas/UserResource")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="User not found"
+     * ),
+     * @OA\Response(
+     * response=403,
+     * description="Unauthorized"
+     * )
+     * )
+     */
     public function deactivate($id)
     {
         try {
@@ -222,6 +399,38 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Patch(
+     * path="/api/v1/users/{id}/activate",
+     * summary="Activate a user account",
+     * description="Sets the user's status to active, allowing them to access the system again.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="ID of the user to activate",
+     * required=true,
+     * @OA\Schema(type="integer", example=1)
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="User activated successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="User account has been activated."),
+     * @OA\Property(property="data", ref="#/components/schemas/UserResource")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="User not found"
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthenticated"
+     * )
+     * )
+     */
     public function activate($id)
     {
         $user = User::find($id);

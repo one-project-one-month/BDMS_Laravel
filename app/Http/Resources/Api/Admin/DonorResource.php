@@ -15,8 +15,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Property(property="userId", type="integer", example="5"),
  * @OA\Property(property="blood_group", type="string", example="O+"),
  * @OA\Property(property="gender", type="string", example="male"),
- * @OA\Property(property="last_donated_at", type="string", format="date", example="2025-12-01"),
- * @OA\Property(property="is_eligible", type="boolean", example=true)
+ * @OA\Property(property="age", type="integer", example=26),
+ * @OA\Property(property="lastDonation", type="string", format="date", example="2025-12-01"),
+ * @OA\Property(property="isActive", type="boolean", example=true)
  * )
  */
 class DonorResource extends JsonResource
