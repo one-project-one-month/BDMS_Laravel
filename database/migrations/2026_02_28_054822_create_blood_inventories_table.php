@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\BloodGroup;
+use App\Enums\BloodInventoryStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +14,17 @@ return new class extends Migration {
     {
         Schema::create('blood_inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
-            $table->enum('blood_group', BloodGroup::values());
-            $table->integer('units_available')->default(0);
-            $table->integer('units_reserved')->default(0);
-            $table->integer('unit_total')->default(0);
-            $table->date('expiry_date')->nullable();
+            $table->foreignId('donation_id')->unique()->constrained()->cascadeOnDelete();
+            $table->foreignId('hospital_id')->constrained()->cascadeOnDelete()->index();
+            $table->enum('blood_group', BloodGroup::values())->index();
+            $table->unsignedSmallInteger('units');
+            $table->date('collected_at');
+            $table->date('expired_at')->index();
+            $table->enum('status', BloodInventoryStatus::values())->default(BloodInventoryStatus::AVAILABLE->value)
+                ->index();
+            $table->foreignId('blood_request_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
+            $table->softDeletesTz();
         });
     }
 

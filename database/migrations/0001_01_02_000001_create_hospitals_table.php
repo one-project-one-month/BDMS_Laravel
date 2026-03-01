@@ -12,14 +12,14 @@ return new class extends Migration {
     {
         Schema::create('hospitals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('appoint_id')->nullable();
-            $table->string('hospital_name');
+            $table->string('name');
             $table->text('address');
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->string('email')->unique();
-            $table->string('license_no');
+            $table->boolean('is_active')->default(true);
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
+            $table->softDeletesTz();
         });
     }
 

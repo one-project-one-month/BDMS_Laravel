@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AppointmentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +13,19 @@ return new class extends Migration {
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('donor_id')->constrained('donors')->onDelete('cascade');
-            $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
-            $table->foreignId('request_id')->nullable()->constrained('blood_requests')->onDelete('set null');
-            $table->enum('appointment_type', ['donation', 'request']);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('hospital_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('donation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('blood_request_id')->nullable()->constrained()->nullOnDelete();
             $table->date('appointment_date');
-            $table->enum('status', ['schaduled', 'cancelled', 'confirmed', 'completed'])->default('schaduled');
+            $table->time('appointment_time');
+
+            $table->enum('status', AppointmentStatus::values())->default(AppointmentStatus::SCHEDULED->value)
+                ->index();
+
+            $table->text('remarks')->nullable();
             $table->timestamps();
+            $table->softDeletesTz();
         });
     }
 
