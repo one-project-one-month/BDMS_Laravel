@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('typeOfCerti', ['first-timer', 'gallon (8)', 'emergency']);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('certificate_title');
             $table->string('certificate_description');
             $table->date('certificate_date');
             $table->timestamps();
+            $table->softDeletesTz();
         });
     }
 
