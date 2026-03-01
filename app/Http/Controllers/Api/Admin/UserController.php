@@ -10,9 +10,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @OA\Tag(
+ * name="Users",
+ * description="API Endpoints for managing users"
+ * )
+ */
+
 class UserController extends Controller
 {
     use ApiResponse;
+
 
     public function index(Request $request)
     {
@@ -39,6 +47,34 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="/api/v1/users",
+     * summary="Create a new user",
+     * description="Creates a new user account.",
+     * tags={"Users"},
+     * security={{"bearerAuth":{}}},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * required={"", "email", "password", "role"},
+     * @OA\Property(property="userName", type="string", example="John Doe"),
+     * @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
+     * @OA\Property(property="password", type="string", format="password", example="Password123"),
+     * @OA\Property(property="role", type="string", enum={"Admin", "Tenant", "Staff"}, example="Tenant"),
+     * @OA\Property(property="tenantId", type="integer", description="Required if role is Tenant", example=1)
+     * )
+     * ),
+     * @OA\Response(
+     * response=201,
+     * description="User created successfully",
+     * @OA\JsonContent(ref="#/components/schemas/UserResource")
+     * ),
+     * @OA\Response(response=422, description="Validation error"),
+     * @OA\Response(response=500, description="User creation failed"),
+     * @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function store(UserRequest $request)
     {
         try {

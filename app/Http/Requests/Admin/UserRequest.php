@@ -26,12 +26,11 @@ class UserRequest extends FormRequest
         $userId = $this->route('id') ? $this->route('id')->id : null;
 
         return [
-            'hospital_id' => 'required|exists:hospitals,id',
-            'role_id' => 'required|exists:roles,id',
-            'user_name' => 'required|string|max:255',
+            'hospitalId' => 'required|exists:hospitals,id',
+            'roleId' => 'required|exists:roles,id',
+            'userName' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $userId,
             'password' => $userId ? 'nullable|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/' : 'required|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/',
-            'role' => 'required|in:admin,staff,user',
             'is_active' => 'boolean',
         ];
     }
