@@ -13,18 +13,18 @@ class AnnouncementController extends Controller
     use ApiResponse;
 
     public function index()
-{
-    return response()->json([
-        'test' => 'API works'
-    ]);
-}
+    {
+        return response()->json([
+            'test' => 'API works'
+        ]);
+    }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'      => 'required|string|max:255',
-            'content'    => 'required|string',
-            'is_active'  => 'boolean',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'is_active' => 'boolean',
             'expired_at' => 'nullable|date',
         ]);
 
@@ -57,9 +57,9 @@ class AnnouncementController extends Controller
             $announcement = Announcement::findOrFail($id);
 
             $validated = $request->validate([
-                'title'      => 'sometimes|string|max:255',
-                'content'    => 'sometimes|string',
-                'is_active'  => 'boolean',
+                'title' => 'sometimes|string|max:255',
+                'content' => 'sometimes|string',
+                'is_active' => 'boolean',
                 'expired_at' => 'nullable|date',
             ]);
 
