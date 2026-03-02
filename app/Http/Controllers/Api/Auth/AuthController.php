@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\Api\Admin\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +72,7 @@ class AuthController extends Controller
         return $this->successResponse(
             'User registered successfully',
             [
-                'user' => $user,
+                'user' => new UserResource($user->load('donor')),
                 'token' => $token
             ],
             201
@@ -136,14 +137,12 @@ class AuthController extends Controller
             );
         }
 
-        $user->tokens()->delete();
-
         $token = $user->createToken('flutter')->plainTextToken;
 
         return $this->successResponse(
             'Login successful',
             [
-                'user' => $user,
+                'user' => new UserResource($user->load('donor')),
                 'token' => $token
             ],
             200
@@ -180,7 +179,7 @@ class AuthController extends Controller
     {
         return $this->successResponse(
             'User profile fetched successfully',
-            $request->user(),
+            new UserResource($request->user()->load('donor')),
             200
         );
     }
