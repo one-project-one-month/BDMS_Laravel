@@ -19,8 +19,8 @@ class AppointmentRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'appointment_date' => $this->appointmentDate,
-            'appointment_time' => $this->appointmentTime,
+            'appointmentDate' => $this->appointmentDate,
+            'appointmentTime' => $this->appointmentTime,
         ]);
     }
 
@@ -32,7 +32,7 @@ class AppointmentRequest extends FormRequest
     public function rules(): array
     {
         //for toggle status
-        if($this->isMethod('patch')) {
+        if ($this->isMethod('patch')) {
             return [
                 'status' => 'required|in:scheduled, cancelled, confirmed, completed',
             ];
@@ -40,8 +40,8 @@ class AppointmentRequest extends FormRequest
 
         //full update (Put Method)
         return [
-            'appointment_date' => 'required|date',
-            'appointment_time' => 'required|date_format:H:i',
+            'appointmentDate' => 'required|date',
+            'appointmentTime' => 'required|date_format:H:i',
             'status' => 'required|in:scheduled, cancelled, confirmed, completed',
             'remarks' => 'nullable|string',
         ];
@@ -49,12 +49,12 @@ class AppointmentRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-       throw new HttpResponseException(
+        throw new HttpResponseException(
             response()->json([
                 'success' => false,
                 'message' => 'Validation Error',
                 'errors' => $validator->errors(),
             ], 422)
-       );
+        );
     }
 }
