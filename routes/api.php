@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AnnouncementController;
 use App\Http\Controllers\Api\Admin\DonorController;
+use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,8 @@ Route::prefix('v1/')->group(function () {
         Route::apiResource('announcements', AnnouncementController::class)->only('store', 'update', 'destory');
         Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
+
+        Route::get('/roles', [RoleController::class, 'index']);
     });
 
     // Admin Only

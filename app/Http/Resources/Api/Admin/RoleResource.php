@@ -12,11 +12,11 @@ class RoleResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
         return [
-            "id" => $this->id,
-            "name" => $this->name
+            'id' => $this->id,
+            'name' => $this->name,
         ];
     }
 }

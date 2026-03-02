@@ -13,9 +13,10 @@ class RoleController extends Controller
     public function index()
     {
         try {
-            $roles = Role::all();
+            $roles = Role::paginate(config('pagnation.perPage'));
 
-            $this->successResponse("Role retrived successfully", RoleResource::collection($roles), 200);
+            $this->successResponse("Role retrieved successfully", $this->buildPaginatedResourceResponse(RoleResource::class, $roles), 200);
+
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
