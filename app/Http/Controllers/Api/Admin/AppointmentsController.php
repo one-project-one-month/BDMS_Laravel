@@ -231,8 +231,7 @@ class AppointmentsController extends Controller
      *     @OA\Response(response=422, description="Validation error"),
      *     @OA\Response(response=500, description="Server error")
      * )
-    */
-    
+    */ 
     public function toggleStatus(AppointmentRequest $request, Appointment $appointment)
     {
         try{
@@ -240,6 +239,46 @@ class AppointmentsController extends Controller
             $appointment->save();
 
             return $this->successResponse("Appointment Status Updated Successfully", new AppointmentResource($appointment));
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/appointments/{id}",
+     *     summary="Delete an appointment",
+     *     description="Deletes an appointment.",
+     *     tags={"Appointments"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the appointment to delete",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Appointment deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Appointment deleted successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/AppointmentResource")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=404, description="Appointment not found")
+     * )
+    */
+    public function destroy(Appointment $appointment)
+    {
+        try {
+            $appointment->delete();
+            return $this->successResponse("Appointment Deleted Successfully!", new AppointmentResource($appointment));
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
