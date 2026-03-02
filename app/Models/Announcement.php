@@ -18,7 +18,7 @@ class Announcement extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
-        'expired_at' => 'date',
+        'expired_at' => 'datetime',
     ];
 
     public function scopeActive(Builder $query): void

@@ -60,6 +60,490 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "Create a new announcement",
+                "description": "Store a new announcement in the database.",
+                "operationId": "9b170061f35bcced25ecb05edcfbf3f5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Blood Donation Drive 2026"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "We are organizing a blood donation camp at City Hospital."
+                                    },
+                                    "expiredAt": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2026-12-31T23:59:59Z"
+                                    },
+                                    "isActive": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Announcement created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Announcement created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Blood Donation Drive 2026"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "..."
+                                                },
+                                                "expiredAt": {
+                                                    "type": "string",
+                                                    "example": "2026-12-31T23:59:59Z"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "example": "2026-03-02T13:30:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/announcements/{id}": {
+            "get": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "Get a specific announcement",
+                "description": "Returns the details of a single announcement by its ID.",
+                "operationId": "034ea18e6de36d9a811429b3be40a372",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the announcement to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Announcement retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Blood Donation Drive 2026"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Join us to save lives!"
+                                                },
+                                                "expiredAt": {
+                                                    "type": "string",
+                                                    "example": "2026-12-31T23:59:59Z"
+                                                },
+                                                "isActive": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "example": "2026-03-02T13:30:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Announcement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "Update an existing announcement",
+                "description": "Update the title, content, or expiration date of an announcement.",
+                "operationId": "631cbdfa1f50b39e29026c2d17661a5b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the announcement to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated Announcement Title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Updated content details..."
+                                    },
+                                    "expiredAt": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2026-12-31T23:59:59Z"
+                                    },
+                                    "isActive": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Announcement updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Announcement updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Updated Announcement Title"
+                                                },
+                                                "expiredAt": {
+                                                    "type": "string",
+                                                    "example": "2026-12-31T23:59:59Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Announcement not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "Delete an announcement",
+                "description": "Permanently remove an announcement from the system.",
+                "operationId": "54f2d865befa4cd7b9fd6e42009529dc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the announcement to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Announcement deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Announcement deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Announcement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/announcements/{id}/deactivate": {
+            "patch": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "Deactivate an announcement",
+                "description": "Change the announcement status to inactive, making it invisible to regular users.",
+                "operationId": "9a2057f93acc27ee2bd043a234210bfd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the announcement to deactivate",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Announcement deactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Announcement deactivated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "isActive": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Announcement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/announcements/{id}/activate": {
+            "patch": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "Activate an announcement",
+                "description": "Change the announcement status to active. Note: An announcement cannot be activated if its expiration date has passed.",
+                "operationId": "a679232c8d5598aadda05bb02e1f9c0a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the announcement to activate",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Announcement activated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Announcement activated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "isActive": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Cannot activate an expired announcement"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Announcement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/appointments": {
@@ -98,6 +582,107 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/appointments/{id}": {
+            "put": {
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Update an existing appointment",
+                "description": "Update the date, time, or status of an appointment.",
+                "operationId": "7e0eb3d57b258b98bea29622d8a77d18",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the appointment to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "hospitalId": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "bloodRequestId": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "appointmentDate": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-10"
+                                    },
+                                    "appointmentTime": {
+                                        "type": "string",
+                                        "example": "02:30 PM"
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "example": "Updating the time due to schedule change."
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Appointment updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Appointment updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AppointmentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Appointment not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
