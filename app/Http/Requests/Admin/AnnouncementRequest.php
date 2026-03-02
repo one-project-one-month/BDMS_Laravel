@@ -26,8 +26,8 @@ class AnnouncementRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
-            'is_active' => ['required', 'boolean'],
-            'expired_at' => ['nullable', 'date', 'after_or_equal:today'],
+            'isActive' => ['required', 'boolean'],
+            'expiredAt' => ['nullable', 'date', 'after_or_equal:today'],
         ];
     }
 

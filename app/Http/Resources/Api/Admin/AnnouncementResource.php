@@ -18,9 +18,9 @@ class AnnouncementResource extends JsonResource
             'id'        => $this->id,
             'title'     => $this->title,
             'content'   => $this->content,
-            'is_active' => $this->is_active,
-            'expired_at'=> $this->expired_at,
-            'created_at'=> $this->created_at,
+            'isActive' => $this->is_active,
+            'expiredAt'=> $this->expired_at,
+            'createdAt'=> $this->created_at,
         ];
     }
 }
