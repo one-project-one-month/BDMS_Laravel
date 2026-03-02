@@ -109,4 +109,62 @@ class AppointmentsController extends Controller
             return $this->errorResponse($e->getMessage(), 500);
         }
     }
+
+    /**
+     * @OA\Patch(
+     *     path="/api/v1/appointments/{id}/toggle-status",
+     *     summary="Toggle appointment status",
+     *     description="Change appointment status (scheduled, confirmed, cancelled, completed).",
+     *     tags={"Appointments"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the appointment",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"status"},
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 enum={"scheduled","confirmed","cancelled","completed"},
+     *                 example="confirmed"
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Appointment status updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Appointment Status Updated Successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/AppointmentResource")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=404, description="Appointment not found"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="Server error")
+     * )
+    */
+    
+    public function toggleStatus(AppointmentRequest $request, Appointment $appointment)
+    {
+        try{
+            $appointment->status = $request->status;
+            $appointment->save();
+
+            return $this->successResponse("Appointment Status Updated Successfully", new AppointmentResource($appointment));
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
 }
