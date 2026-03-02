@@ -9,9 +9,53 @@ use App\Http\Resources\Api\Admin\AnnouncementResource;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ * name="Announcements",
+ * description="API Endpoints for managing announcements"
+ * )
+ */
 class AnnouncementController extends Controller
 {
     use ApiResponse;
+
+    /**
+     * @OA\Get(
+     * path="/api/v1/announcements",
+     * summary="Get list of all announcements",
+     * description="Returns a collection of announcements. Can be filtered by is active.",
+     * tags={"Announcements"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     * name="isActive",
+     * in="query",
+     * description="Filter users by is active (e.g., true or false)",
+     * required=false,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(
+     * property="data",
+     * type="array",
+     * @OA\Items(ref="#/components/schemas/AnnouncementResource")
+     * ),
+     * @OA\Property(property="message", type="string", example="Announcements retrieved successfully")
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthenticated"
+     * ),
+     * @OA\Response(
+     * response=403,
+     * description="Forbidden"
+     * )
+     * )
+     */
     public function index(Request $request)
     {
         try {
