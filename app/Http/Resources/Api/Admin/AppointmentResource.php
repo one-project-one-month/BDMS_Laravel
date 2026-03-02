@@ -29,17 +29,20 @@ class AppointmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'hospital_id' => $this->hospital_id,
-            'donation_id' => $this->donation_id,
-            'blood_request_id' => $this->blood_request_id,
-            'appointment_date' => $this->appointment_date->toDateString(),
-            'appointment_time' => $this->appointment_time->format('H:i'),
+            'userId' => $this->user_id,
+            'hospitalId' => $this->hospital_id,
+            'donationId' => $this->donation_id,
+            'bloodRequestId' => $this->blood_request_id,
+
+            'appointmentDate' => $this->appointment_date?->toDateString(),
+            'appointmentTime' => $this->appointment_time?->format('H:i'),
+
             'status' => $this->status,
             'remarks' => $this->remarks,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
-            'deleted_at' => optional($this->deleted_at)->toDateTimeString(),
-        ];
+
+            'createdAt' => $this->created_at?->toDateTimeString(),
+            'updatedAt' => $this->updated_at?->toDateTimeString(),
+            'deletedAt' => $this->deleted_at?->toDateTimeString(),
+    ];
     }
 }
