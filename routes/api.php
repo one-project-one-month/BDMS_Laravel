@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AnnouncementController;
+use App\Http\Controllers\Api\Admin\DonationController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -37,6 +38,8 @@ Route::prefix('v1/')->group(function () {
         Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
 
+        Route::apiResource('donations', DonationController::class);
+
         Route::get('/roles', [RoleController::class, 'index']);
     });
 
@@ -51,5 +54,9 @@ Route::prefix('v1/')->group(function () {
 
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
+
+        //donations
+        Route::post('donations/{id}/restore', [DonationController::class, 'restore']);
+        Route::delete('donations/{id}/force-delete', [DonationController::class, 'forceDelete']);
     });
 });
