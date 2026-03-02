@@ -6,20 +6,15 @@ namespace App\Http\Controllers;
  * @OA\Info(
  * title="Blood Donation Management System API",
  * version="1.0.0",
- * description="API documentation for Blood Donation Management System"
+ * description="API documentation"
  * )
- *
- * @OA\Server(
- * url="http://localhost:8000",
- * description="Local Server"
- * )
- *
+ * @OA\Components(
  * @OA\SecurityScheme(
  * securityScheme="bearerAuth",
  * type="http",
  * scheme="bearer",
- * in="header",
- * name="Authorization"
+ * bearerFormat="JWT"
+ * )
  * )
  */
 abstract class Controller
