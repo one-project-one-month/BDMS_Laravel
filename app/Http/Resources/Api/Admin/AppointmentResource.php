@@ -21,7 +21,7 @@ class AppointmentResource extends JsonResource
             'donation_id' => $this->donation_id,
             'blood_request_id' => $this->blood_request_id,
             'appointment_date' => $this->appointment_date->toDateString(),
-            'appointment_time' => $this->appointment_time->format('H:i:s'),
+            'appointment_time' => $this->appointment_time->format('H:i'),
             'status' => $this->status,
             'remarks' => $this->remarks,
             'created_at' => $this->created_at->toDateTimeString(),

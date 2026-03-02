@@ -15,7 +15,9 @@ class AppointmentsController extends Controller
     //appointments index
     public function index()
     {
-        $appointments = Appointment::with(['user', 'hospital'])->latest()->paginate(10);
+        $appointments = Appointment::with(['user', 'hospital'])
+            ->latest()
+            ->paginate(config('pagination.perPage'));
 
         return $this->successResponse('Appointments Index', AppointmentResource::collection($appointments));
     }
@@ -25,7 +27,7 @@ class AppointmentsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'appointment_date' => 'required|date',
-            'appointment_time' => 'required|date_format:H:i:s',
+            'appointment_time' => 'required|date_format:H:i',
             'status' => 'required|in:scheduled, cancelled, confirmed, completed',
             'remarks' => 'nullable|string',
         ]);
