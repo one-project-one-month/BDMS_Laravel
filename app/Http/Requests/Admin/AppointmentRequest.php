@@ -31,6 +31,14 @@ class AppointmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        //for toggle status
+        if($this->isMethod('patch')) {
+            return [
+                'status' => 'required|in:scheduled, cancelled, confirmed, completed',
+            ];
+        }
+
+        //full update (Put Method)
         return [
             'appointment_date' => 'required|date',
             'appointment_time' => 'required|date_format:H:i',
