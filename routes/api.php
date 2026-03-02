@@ -19,10 +19,11 @@ Route::prefix('v1/auth')->group(function () {
 
 Route::prefix('v1/')->group(function () {
 
+    // Common routes
     Route::apiResource('announcements', AnnouncementController::class)->only('index', 'show');
 
-
-    Route::middleware(['auth:sanctum', 'Role.check:admin,staff'])->group(function () {
+    // Admin and Staff
+    Route::middleware(['auth:sanctum', 'Role.check:1,2'])->group(function () {
         Route::patch('users/{id}/deactivate', [UserController::class, 'deactivate']);
         Route::patch('users/{id}/activate', [UserController::class, 'activate']);
         Route::apiResource('users', UserController::class);
@@ -36,7 +37,8 @@ Route::prefix('v1/')->group(function () {
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
     });
 
-    Route::middleware(['auth:sanctum', 'Role.check:admin'])->group(function () {
+    // Admin Only
+    Route::middleware(['auth:sanctum', 'Role.check:1'])->group(function () {
         Route::get('users/trashed', [UserController::class, 'trashedIndex']);
         Route::post('users/{id}/restore', [UserController::class, 'restore']);
         Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete']);
