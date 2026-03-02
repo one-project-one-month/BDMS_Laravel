@@ -18,6 +18,10 @@ Route::prefix('v1/auth')->group(function () {
 });
 
 Route::prefix('v1/')->group(function () {
+
+    Route::apiResource('announcements', AnnouncementController::class)->only('index', 'show');
+
+
     Route::middleware(['auth:sanctum', 'Role.check:admin,staff'])->group(function () {
         Route::patch('users/{id}/deactivate', [UserController::class, 'deactivate']);
         Route::patch('users/{id}/activate', [UserController::class, 'activate']);
@@ -27,7 +31,7 @@ Route::prefix('v1/')->group(function () {
         Route::patch('donors/{id}/activate', [UserController::class, 'activate']);
         Route::apiResource('donors', DonorController::class);
 
-        Route::apiResource('announcements', AnnouncementController::class);
+        Route::apiResource('announcements', AnnouncementController::class)->only('store', 'update', 'destory');
         Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
     });
