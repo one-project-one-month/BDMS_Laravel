@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Api\Admin\AnnouncementController;
 use App\Http\Controllers\Api\Admin\AppointmentsController;
+use App\Http\Controllers\Api\Admin\DonationController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +49,8 @@ Route::prefix('v1/')->group(function () {
         Route::get('users/{userId}', [ProfileController::class, 'show']);
         Route::put('users/{userId}', [ProfileController::class, 'update']);
         Route::apiResource('users', ProfileController::class);
+
+        Route::apiResource('donations', DonationController::class);
     });
 
     // Admin Only
@@ -65,6 +67,10 @@ Route::prefix('v1/')->group(function () {
 
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
+
+        //donations
+        Route::post('donations/{id}/restore', [DonationController::class, 'restore']);
+        Route::delete('donations/{id}/force-delete', [DonationController::class, 'forceDelete']);
 
         //appointment
         Route::apiResource('appointments', AppointmentsController::class);
