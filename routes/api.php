@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AnnouncementController;
+use App\Http\Controllers\Api\Admin\AppointmentsController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -51,5 +52,10 @@ Route::prefix('v1/')->group(function () {
 
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
+
+        //appointment
+        Route::apiResource('appointments', AppointmentsController::class);
+        //toggle status
+        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
     });
 });
