@@ -48,8 +48,7 @@ class DonorRequest extends FormRequest
     public function rules(): array
     {
         // $donorId = $this->route('id') ? $this->route('id')->id : null;
-        $donor = $this->route('donor');
-        $donorId = $donor?->id;
+        $donorId = $this->route('donor');
 
         return [
             'user_id'             => [

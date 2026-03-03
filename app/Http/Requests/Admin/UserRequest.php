@@ -41,8 +41,7 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = $this->route('user');
-        $userId = $user?->id;
+        $userId = $this->route('user');
 
         return [
             'hospital_id'   => 'nullable|exists:hospitals,id',
