@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Api\Admin;
 
 use App\Http\Resources\Api\Admin\HospitalResource;
+use App\Http\Resources\Api\Admin\RoleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -35,7 +36,7 @@ class UserResource extends JsonResource
             'role' => new RoleResource($this->whenLoaded('role')),
             'hospitalId' => $this->hospital_id,
             'hospital' => new HospitalResource($this->whenLoaded('hospital')),
-            'user_name' => $this->user_name,
+            'userName' => $this->user_name,
             'email' => $this->email,
             'isActive' => $this->is_active,
             'createdAt' => $this->created_at->format('Y-m-d H:i:s'),
