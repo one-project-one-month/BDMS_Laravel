@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -17,21 +18,43 @@ class UserRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $data = [
+            'hospital_id' => $this->hospitalId,
+            'role_id'     => $this->roleId,
+            'user_name'   => $this->userName,
+            'is_active' => $this->has('isActive')
+                ? filter_var($this->isActive, FILTER_VALIDATE_BOOLEAN)
+                : true,
+        ];
+
+        $this->merge($data);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        $userId = $this->route('id') ? $this->route('id')->id : null;
+        $user = $this->route('user');
+        $userId = $user?->id;
 
         return [
-            'hospitalId' => 'required|exists:hospitals,id',
-            'roleId' => 'required|exists:roles,id',
-            'userName' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $userId,
-            'password' => $userId ? 'nullable|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/' : 'required|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/',
-            'is_active' => 'boolean',
+            'hospital_id'   => 'nullable|exists:hospitals,id',
+            'role_id'       => 'required|exists:roles,id',
+            'user_name'     => 'required|string|max:255',
+            'email'       => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId),
+            ],
+            'password'      => $userId ? 'nullable|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/' : 'required|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/',
+            'is_active'     => 'boolean',
         ];
     }
 
@@ -44,4 +67,3 @@ class UserRequest extends FormRequest
         ], 422));
     }
 }
-
