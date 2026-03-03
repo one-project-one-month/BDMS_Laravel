@@ -42,13 +42,12 @@ Route::prefix('v1/')->group(function () {
         Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
 
-        Route::get('users/{userId}/donors', [ProfileDonorController::class, 'index']);
-        Route::post('users/{userId}/donors', [ProfileDonorController::class, 'store']);
-        Route::apiResource('users', ProfileDonorController::class);
+        Route::get('/roles', [RoleController::class, 'index']);
 
-        Route::get('users/{userId}', [ProfileController::class, 'show']);
-        Route::put('users/{userId}', [ProfileController::class, 'update']);
-        Route::apiResource('users', ProfileController::class);
+        //appointment
+        Route::apiResource('appointments', AppointmentsController::class);
+        //toggle status
+        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
     });
 
     // Admin Only
@@ -66,9 +65,6 @@ Route::prefix('v1/')->group(function () {
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
 
-        //appointment
-        Route::apiResource('appointments', AppointmentsController::class);
-        //toggle status
-        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
+        
     });
 });
