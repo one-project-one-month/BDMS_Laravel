@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\Admin\AppointmentsController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
@@ -51,6 +53,9 @@ Route::prefix('v1/')->group(function () {
 
     // Admin Only
     Route::middleware(['auth:sanctum', 'Role.check:1'])->group(function () {
+        // single action controller for dashboard
+        Route::get('/dashboard', DashboardController::class);
+
         Route::get('users/trashed', [UserController::class, 'trashedIndex']);
         Route::post('users/{id}/restore', [UserController::class, 'restore']);
         Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete']);

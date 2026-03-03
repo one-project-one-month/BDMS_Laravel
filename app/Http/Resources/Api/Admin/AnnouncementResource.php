@@ -37,5 +37,3 @@ class AnnouncementResource extends JsonResource
         ];
     }
 }
-
-
