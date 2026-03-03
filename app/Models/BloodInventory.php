@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use App\Enums\BloodGroup;
@@ -26,11 +25,18 @@ class BloodInventory extends Model
 
     protected $casts = [
         'collected_at' => 'date',
-        'expired_at' => 'date',
-        'units' => 'integer',
-        'blood_group' => BloodGroup::class,
-        'status' => BloodInventoryStatus::class,
+        'expired_at'   => 'date',
+        'units'        => 'integer',
+        'blood_group'  => BloodGroup::class,
+        'status'       => BloodInventoryStatus::class,
     ];
+
+    public function scopeAvailableUnitsByHospital($query)
+    {
+        return $query->where('status', BloodInventoryStatus::AVAILABLE)
+            ->selectRaw('hospital_id, SUM(units) as total_units')
+            ->groupBy('hospital_id');
+    }
 
     public function donation()
     {

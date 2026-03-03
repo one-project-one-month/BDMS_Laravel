@@ -85,4 +85,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Announcement::class);
     }
+
+    public function hasPermission($permission)
+    {
+        return $this->role?->permissions
+            ->contains('name', $permission);
+    }
 }
