@@ -38,8 +38,8 @@ class AppointmentRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'hospital_id' => 'required|exists:hospitals,id',
-            'donation_id' => 'nullable|exists:donations,id',
-            'blood_request_id' => 'nullable|exists:blood_requests,id',
+            'donation_id' => 'nullable|exists:donations,id|required_without:blood_request_id',
+            'blood_request_id' => 'nullable|exists:blood_requests,id|required_without:donation_id',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
             'status' => 'required|in:scheduled, cancelled, confirmed, completed',

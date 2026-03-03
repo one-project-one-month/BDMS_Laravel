@@ -39,6 +39,11 @@ Route::prefix('v1/')->group(function () {
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
 
         Route::get('/roles', [RoleController::class, 'index']);
+
+        //appointment
+        Route::apiResource('appointments', AppointmentsController::class);
+        //toggle status
+        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
     });
 
     // Admin Only
@@ -53,9 +58,6 @@ Route::prefix('v1/')->group(function () {
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
 
-        //appointment
-        Route::apiResource('appointments', AppointmentsController::class);
-        //toggle status
-        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
+        
     });
 });
