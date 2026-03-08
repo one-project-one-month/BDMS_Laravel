@@ -7,9 +7,9 @@ use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
+use App\Http\Controllers\Api\Admin\MedicalRecordController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -48,6 +48,9 @@ Route::prefix('v1/')->group(function () {
         Route::apiResource('appointments', AppointmentsController::class);
         //toggle status
         Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
+
+        //MedicalRecord
+        Route::apiResource('medical-recores',MedicalRecordController::class);
     });
 
     // Admin Only
