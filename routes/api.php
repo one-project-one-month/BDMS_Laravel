@@ -6,8 +6,8 @@ use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\BloodInventoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +48,9 @@ Route::prefix('v1/')->group(function () {
         Route::apiResource('appointments', AppointmentsController::class);
         //toggle status
         Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
+
+        //Blood Inventory
+        Route::apiResource('blood-inventories', BloodInventoryController::class)->except('destory');
     });
 
     // Admin Only
@@ -65,6 +68,7 @@ Route::prefix('v1/')->group(function () {
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
 
-        
+        Route::post('blood-inventory/{id}/restore', [BloodInventoryController::class, 'restore']);
+        Route::delete('blood-inventory/{id}/force-delete', [BloodInventoryController::class, 'forceDelete']);
     });
 });
