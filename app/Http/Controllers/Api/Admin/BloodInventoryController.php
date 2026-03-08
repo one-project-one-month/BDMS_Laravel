@@ -71,26 +71,44 @@ class BloodInventoryController extends Controller
         }
     }
 
-    public function markUsed($id)
+    public function markUsed(Request $request, $id)
     {
-        $inventory = BloodInventory::findOrFail($id);
-        $status = BloodInventoryStatus::AVAILABLE->value;
         try {
-            if ($inventory->status->value !== $status) {
+            // Validate body
+            $validated = $request->validate([
+                'blood_request_id' => ['required', 'integer', 'exists:blood_requests,id'],
+            ]);
+
+            $bloodRequestId = $validated['blood_request_id'];
+
+            // Find inventory
+            $inventory = BloodInventory::findOrFail($id);
+
+            // Handle enum casting (if status is cast to enum in model)
+            $currentStatus = $inventory->status->value;
+
+            // Check if inventory is available
+            if ($currentStatus !== BloodInventoryStatus::AVAILABLE->value) {
                 return $this->errorResponse(
-                "Inventory is not available to mark as used. Current status: {$status}",
-                400
-            );
+                    "This blood has been used.",
+                    400
+                );
             }
 
-            $inventory->update([
-                'status' => BloodInventoryStatus::USED->value,
-            ]);
+            // Mark as used and assign blood_request_id
+            $inventory->status = BloodInventoryStatus::USED->value;
+            $inventory->blood_request_id = $bloodRequestId;
+            $inventory->save();
+
+            // Refresh so resource shows updated data
+            $inventory->refresh();
 
             return $this->successResponse(
                 'Blood inventory marked as used successfully',
-                new BloodInventoryResource($inventory)
+                new BloodInventoryResource($inventory), 200
             );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->errorResponse($e->errors(), 422);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
