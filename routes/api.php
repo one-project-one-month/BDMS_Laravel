@@ -51,6 +51,7 @@ Route::prefix('v1/')->group(function () {
 
         //Blood Inventory
         Route::apiResource('blood-inventories', BloodInventoryController::class)->except('destory');
+        Route::put('blood-inventories/{id}/used', [BloodInventoryController::class, 'markUsed']);
     });
 
     // Admin Only

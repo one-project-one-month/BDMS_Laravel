@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Helpers\ApiResponse;
 use App\Models\BloodInventory;
 use App\Http\Resources\Api\Admin\BloodInventoryResource;
+use App\Enums\BloodInventoryStatus;
 
 class BloodInventoryController extends Controller
 {
@@ -70,5 +71,28 @@ class BloodInventoryController extends Controller
         }
     }
 
-    
+    public function markUsed($id)
+    {
+        $inventory = BloodInventory::findOrFail($id);
+        $status = BloodInventoryStatus::AVAILABLE->value;
+        try {
+            if ($inventory->status->value !== $status) {
+                return $this->errorResponse(
+                "Inventory is not available to mark as used. Current status: {$status}",
+                400
+            );
+            }
+
+            $inventory->update([
+                'status' => BloodInventoryStatus::USED->value,
+            ]);
+
+            return $this->successResponse(
+                'Blood inventory marked as used successfully',
+                new BloodInventoryResource($inventory)
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
 }

@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Models\BloodRequest;
-use App\Observers\BloodRequestObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        BloodRequest::observe(BloodRequestObserver::class);
+        //
     }
 
     /**
