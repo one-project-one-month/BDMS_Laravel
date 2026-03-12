@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +64,15 @@ Route::prefix('v1/')->group(function () {
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
 
-        
+
+    });
+
+    // User Only
+    Route::middleware(['auth:sanctum', 'Role.check:3'])->group(function () {
+        Route::get('/users/{userId}', [ProfileController::class, 'show']);
+        Route::put('/users/{userId}', [ProfileController::class, 'update']);
+
+        Route::get('users/{userId}/doners', [ProfileDonorController::class, 'index']);
+        Route::post('users/{userId}/doners', [ProfileDonorController::class, 'store']);
     });
 });
