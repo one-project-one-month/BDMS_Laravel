@@ -56,7 +56,7 @@ Route::prefix('v1/')->group(function () {
         Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
 
         //MedicalRecord
-        Route::apiResource('medical-recores',MedicalRecordController::class);
+        Route::apiResource('medical-recores', MedicalRecordController::class);
     });
 
     // Admin Only
@@ -74,14 +74,17 @@ Route::prefix('v1/')->group(function () {
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
 
-        //donations
         Route::post('donations/{id}/restore', [DonationController::class, 'restore']);
         Route::delete('donations/{id}/force-delete', [DonationController::class, 'forceDelete']);
 
-        //appointment
-        Route::apiResource('appointments', AppointmentsController::class);
-        //toggle status
-        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
-        
+    });
+
+    // User Only
+    Route::middleware(['auth:sanctum', 'Role.check:3'])->group(function () {
+        Route::get('/users/{userId}', [ProfileController::class, 'show']);
+        Route::put('/users/{userId}', [ProfileController::class, 'update']);
+
+        Route::get('users/{userId}/doners', [ProfileDonorController::class, 'index']);
+        Route::post('users/{userId}/doners', [ProfileDonorController::class, 'store']);
     });
 });
