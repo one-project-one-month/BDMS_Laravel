@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
 use App\Http\Controllers\Api\Admin\MedicalRecordController;
+use App\Http\Controllers\Api\User\CertificateController as UserCertificateController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -86,5 +87,8 @@ Route::prefix('v1/')->group(function () {
 
         Route::get('users/{userId}/doners', [ProfileDonorController::class, 'index']);
         Route::post('users/{userId}/doners', [ProfileDonorController::class, 'store']);
+
+        Route::get('/{userId}/certificates', [UserCertificateController::class, 'index']);
+        Route::get('/{userId}/certificates/{id}', [UserCertificateController::class, 'show']);
     });
 });
