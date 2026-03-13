@@ -19,10 +19,11 @@ class BloodInventoryController extends Controller
     public function index(Request $request)
     {
         try {
+            BloodInventory::expireIfNeeded();
+
             $status = $request->query('status');
             $perPage = $request->query('per_page', config('pagination.perPage', 10));
 
-            // Base query with optional status filter
             $query = BloodInventory::with(['hospital', 'bloodRequest']);
             if (!is_null($status)) {
                 $query->where('status', $status);
@@ -60,6 +61,8 @@ class BloodInventoryController extends Controller
     public function show($id)
     {
         try {
+            BloodInventory::expireIfNeeded();
+
             $inventory = BloodInventory::with(['hospital', 'bloodRequest'])->findOrFail($id);
             return $this->successResponse(
                 'Blood inventory retrieved successfully',
@@ -74,6 +77,8 @@ class BloodInventoryController extends Controller
     public function markUsed(Request $request, $id)
     {
         try {
+            BloodInventory::expireIfNeeded();
+
             // Validate body
             $validated = $request->validate([
                 'blood_request_id' => ['required', 'integer', 'exists:blood_requests,id'],
