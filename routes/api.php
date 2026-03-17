@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AnnouncementController;
 use App\Http\Controllers\Api\Admin\AppointmentsController;
+use App\Http\Controllers\Api\Admin\DonationController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -10,6 +11,9 @@ use App\Http\Controllers\Api\Admin\BloodInventoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
+use App\Http\Controllers\Api\Admin\MedicalRecordController;
+use App\Http\Controllers\Api\User\CertificateController as UserCertificateController;
+use App\Http\Controllers\Api\User\AppointmentController as UserAppointmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -44,6 +48,11 @@ Route::prefix('v1/')->group(function () {
 
         Route::get('/roles', [RoleController::class, 'index']);
 
+        Route::get('users/{userId}', [ProfileController::class, 'show']);
+        Route::put('users/{userId}', [ProfileController::class, 'update']);
+        Route::apiResource('users', ProfileController::class);
+
+        Route::apiResource('donations', DonationController::class);
         //appointment
         Route::apiResource('appointments', AppointmentsController::class);
         //toggle status
@@ -52,6 +61,8 @@ Route::prefix('v1/')->group(function () {
         //Blood Inventory
         Route::apiResource('blood-inventories', BloodInventoryController::class)->except('destory');
         Route::put('blood-inventories/{id}/used', [BloodInventoryController::class, 'markUsed']);
+        //MedicalRecord
+        Route::apiResource('medical-recores', MedicalRecordController::class);
     });
 
     // Admin Only
@@ -71,5 +82,24 @@ Route::prefix('v1/')->group(function () {
 
         Route::post('blood-inventory/{id}/restore', [BloodInventoryController::class, 'restore']);
         Route::delete('blood-inventory/{id}/force-delete', [BloodInventoryController::class, 'forceDelete']);
+        Route::post('donations/{id}/restore', [DonationController::class, 'restore']);
+        Route::delete('donations/{id}/force-delete', [DonationController::class, 'forceDelete']);
+
+    });
+
+    // User Only
+    Route::middleware(['auth:sanctum', 'Role.check:3'])->group(function () {
+        Route::get('/users/{userId}', [ProfileController::class, 'show']);
+        Route::put('/users/{userId}', [ProfileController::class, 'update']);
+
+        Route::get('users/{userId}/doners', [ProfileDonorController::class, 'index']);
+        Route::post('users/{userId}/doners', [ProfileDonorController::class, 'store']);
+
+        Route::get('/{userId}/certificates', [UserCertificateController::class, 'index']);
+        Route::get('/{userId}/certificates/{id}', [UserCertificateController::class, 'show']);
+
+        Route::get("/{userId}/appointments", [UserAppointmentController::class, "index"]);
+        Route::get("/{userId}/appointments/{id}", [UserAppointmentController::class, "show"]);
+        Route::patch("/{userId}/appointments", [UserAppointmentController::class, "update"]);
     });
 });
