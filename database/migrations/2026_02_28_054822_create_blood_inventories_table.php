@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('blood_inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('donation_id')->unique()->constrained()->cascadeOnDelete();
-            $table->foreignId('hospital_id')->constrained()->cascadeOnDelete()->index();
+            $table->foreignId('hospital_id')->constrained()->cascadeOnDelete();
             $table->enum('blood_group', BloodGroup::values())->index();
             $table->unsignedSmallInteger('units');
             $table->date('collected_at');

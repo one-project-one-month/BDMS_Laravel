@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\BloodInventoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
@@ -57,6 +58,9 @@ Route::prefix('v1/')->group(function () {
         //toggle status
         Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
 
+        //Blood Inventory
+        Route::apiResource('blood-inventories', BloodInventoryController::class)->except('destory');
+        Route::put('blood-inventories/{id}/used', [BloodInventoryController::class, 'markUsed']);
         //MedicalRecord
         Route::apiResource('medical-recores', MedicalRecordController::class);
     });
@@ -76,6 +80,8 @@ Route::prefix('v1/')->group(function () {
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
 
+        Route::post('blood-inventory/{id}/restore', [BloodInventoryController::class, 'restore']);
+        Route::delete('blood-inventory/{id}/force-delete', [BloodInventoryController::class, 'forceDelete']);
         Route::post('donations/{id}/restore', [DonationController::class, 'restore']);
         Route::delete('donations/{id}/force-delete', [DonationController::class, 'forceDelete']);
 
