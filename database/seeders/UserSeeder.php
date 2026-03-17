@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Hospital;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -13,20 +14,36 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('password'),
-            // 'role' => 'admin',
-        ]);
+        $adminRole = Role::where('name', 'admin')->first();
+        $staffRole = Role::where('name', 'staff')->first();
 
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'johndoe@example.com',
-            'password' => Hash::make('password'),
-            // 'role' => 'user',
-        ]);
+        $hospitals = Hospital::orderBy('id')->take(3)->get();
 
-        User::factory(10)->create();
+        # Admin
+        User::firstOrCreate(
+            ['email' => 'admin@bdms.com'],
+            [
+                'role_id'   => $adminRole->id,
+                'user_name' => 'System Admin',
+                'password'  => 'password',
+                'is_active' => true,
+            ]
+        );
+
+        # Staff
+        foreach ($hospitals as $index => $hospital) {
+            $staffNumber = $index + 1;
+
+            User::firstOrCreate(
+                ['email' => "staff{$staffNumber}@gmail.com"],
+                [
+                    'role_id' => $staffRole->id,
+                    'hospital_id' => $hospital->id,
+                    'user_name' => "Staff {$staffNumber}",
+                    'password' => 'password123',
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }

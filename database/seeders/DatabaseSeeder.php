@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\UserSeeder;
+use Database\Seeders\HospitalSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([UserSeeder::class]);
+        $this->call([
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
+            HospitalSeeder::class,
+            UserSeeder::class,
+            AnnouncementSeeder::class,
+            DonorSeeder::class,
+            BloodInventorySeeder::class,
+        ]);
     }
 }

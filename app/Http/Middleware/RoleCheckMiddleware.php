@@ -20,7 +20,11 @@ class RoleCheckMiddleware
     {
         $user = Auth::user();
 
-        if ($user && in_array($user->role, $roles)) {
+        if (!$user) {
+            return $this->errorResponse("Unauthorized", 401);
+        }
+
+        if (in_array((string) $user->role_id, $roles)) {
             return $next($request);
         }
 

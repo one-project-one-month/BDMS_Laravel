@@ -5,7 +5,7 @@
 | Category       | Technology      |
 | -------------- | --------------- |
 | Framework      | Laravel 12      |
-| Language       | PHP 8.2+        |
+| Language       | PHP 8.4         |
 | Database       | Postgres        |
 | Authentication | Laravel Sanctum |
 | API Format     | RESTful         |
