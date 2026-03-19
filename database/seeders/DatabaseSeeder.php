@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             HospitalSeeder::class,
             UserSeeder::class,
             AnnouncementSeeder::class,
+            DonorSeeder::class,
+            BloodInventorySeeder::class,
         ]);
     }
 }

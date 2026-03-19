@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Middleware\RoleCheckMiddleware;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,10 +17,27 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+        $middleware->redirectGuestsTo(fn (Request $request) => null);
         $middleware->alias([
             'Role.check' => RoleCheckMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Authentication Exception
+        $exceptions->render(function (AuthenticationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Unauthenticated",
+                'status' => 401
+            ], 401);
+        });
+
+        // Authorization Exception
+        $exceptions->render(function (AuthorizationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage() ?: 'Forbidden',
+                'status'  => 403,
+            ], 403);
+        });
     })->create();

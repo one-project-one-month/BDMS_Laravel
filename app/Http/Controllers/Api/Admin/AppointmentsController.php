@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\AppointmentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\Admin\AppointmentRequest;
 use App\Http\Resources\Api\Admin\AppointmentResource;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\App;
+use Pest\Support\Str;
 
 /**
  * @OA\Tag(
@@ -92,7 +95,7 @@ class AppointmentsController extends Controller
     {
         try {
             $appointment = Appointment::create($request->validated());
-            return $this->successResponse("Appointment Created Successfully!", new AppointmentResource($appointment));
+            return $this->successResponse("Appointment Created Successfully!", new AppointmentResource($appointment), 201);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
@@ -232,17 +235,22 @@ class AppointmentsController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
     */ 
-    public function toggleStatus(AppointmentRequest $request, Appointment $appointment)
-    {
-        try{
-            $appointment->status = $request->status;
-            $appointment->save();
+    public function toggleStatus(AppointmentRequest $request, String $id)
+        {
+            try {
+                
+                $appointment = Appointment::findOrFail($id);
+                
+                $appointment->update([
+                    'status' => $request->status,
+                ]);
 
-            return $this->successResponse("Appointment Status Updated Successfully", new AppointmentResource($appointment));
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+                return $this->successResponse("Appointment Status Updated Successfully", new AppointmentResource($appointment));
+
+            } catch (\Exception $e) {
+                return $this->errorResponse($e->getMessage(), 500);
+            }
         }
-    }
 
     /**
      * @OA\Delete(

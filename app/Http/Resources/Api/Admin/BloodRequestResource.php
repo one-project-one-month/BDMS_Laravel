@@ -4,23 +4,30 @@ namespace App\Http\Resources\Api\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
-class BloodRequestResource extends JsonResource
-{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'blood_request_code' => $this->blood_request_code,
-            'patient_name' => $this->patient_name,
-            'blood_group' => $this->blood_group?->value,
-            'units_required' => $this->units_required,
-            'urgency' => $this->urgency?->value,
-            'status' => $this->status?->value,
-            'required_date' => $this->required_date,
-            'approved_by' => $this->approved_by,
-            'approved_at' => $this->approved_at,
-            'created_at' => $this->created_at,
+            'id'               => $this->id,
+            'patientName'      => $this->patient_name,
+            'contactPhone'     => $this->contact_phone,
+            'bloodRequestCode' => $this->blood_request_code,
+            'urgencyLevel'     => $this->urgency,
+            'bloodGroup'       => $this->blood_group,
+            'unitsRequired'    => $this->units_required,
+            'reason'           => $this->reason,
+            'status'           => $this->status,
+            'hospital'         => new HospitalResource($this->whenLoaded('hospital')),
+            'approvedBy'       => $this->whenLoaded('approvedBy'),
+            'requiredDate'     => $this->required_date?->format('Y-m-d'),
+            'approvedAt'       => $this->approved_at?->format('Y-m-d'),
+            'createdAt'        => $this->created_at?->format('Y-m-d'),
+            'updatedAt'        => $this->updated_at?->format('Y-m-d'),
+            'deletedAt'        => $this->deleted_at?->format('Y-m-d'),
         ];
     }
 }

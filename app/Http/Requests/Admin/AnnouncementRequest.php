@@ -17,17 +17,39 @@ class AnnouncementRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_active' => $this->has('isActive')
+                ? filter_var($this->isActive, FILTER_VALIDATE_BOOLEAN)
+                : true,
+
+            'expired_at' => $this->expiredAt ?? null,
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_active'          => $this->isActive,
+            'expired_at'         => $this->expiredAt,
+        ]);
+    }
+
     public function rules(): array
     {
         return [
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
-            'isActive' => ['required', 'boolean'],
-            'expiredAt' => ['nullable', 'date', 'after_or_equal:today'],
+            'is_active' => ['boolean'],
+            'expired_at' => ['nullable', 'date', 'after_or_equal:today'],
         ];
     }
 
