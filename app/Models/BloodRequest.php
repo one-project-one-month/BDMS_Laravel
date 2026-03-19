@@ -2,21 +2,24 @@
 
 namespace App\Models;
 
-use App\Enums\BloodGroup;
-use App\Enums\BloodRequestStatus;
-use App\Enums\Urgency;
-use App\Models\Appointment;
-use App\Models\Hospital;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\BloodGroup;
+use App\Enums\Urgency;
+use App\Enums\BloodRequestStatus;
 
 class BloodRequest extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'blood_requests';
+
     protected $fillable = [
         'user_id',
         'hospital_id',
+        'blood_request_code',
         'patient_name',
         'blood_group',
         'units_required',
@@ -30,13 +33,25 @@ class BloodRequest extends Model
     ];
 
     protected $casts = [
-        'required_date' => 'date',
-        'approved_at' => 'datetime',
-        'units_required' => 'integer',
-        'blood_group' => BloodGroup::class,
-        'urgency' => Urgency::class,
-        'status' => BloodRequestStatus::class,
+        'blood_group'  => BloodGroup::class,
+        'urgency'      => Urgency::class,
+        'status'       => BloodRequestStatus::class,
+        'required_date'=> 'date',
+        'approved_at'  => 'datetime',
+        'created_at'   => 'datetime',
+        'updated_at'   => 'datetime',
+        'deleted_at'   => 'datetime',
     ];
+
+    protected $attributes = [
+        'status' => BloodRequestStatus::PENDING,
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
     public function user()
     {
@@ -48,13 +63,92 @@ class BloodRequest extends Model
         return $this->belongsTo(Hospital::class);
     }
 
-    public function approvedBy()
+    public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    public function appointments()
+    /*
+    |--------------------------------------------------------------------------
+    | Status Check Helpers Functions
+    |--------------------------------------------------------------------------
+    */
+
+    public function canBeApproved(): bool
     {
-        return $this->hasMany(Appointment::class, 'request_id');
+        return $this->status === BloodRequestStatus::PENDING;
     }
+
+    public function canBeRejected(): bool
+    {
+        return $this->status === BloodRequestStatus::PENDING;
+    }
+
+    public function canBeCancelled(): bool
+    {
+        return $this->status === BloodRequestStatus::PENDING;
+    }
+
+    public function canBeFulfilled(): bool
+    {
+        return $this->status === BloodRequestStatus::APPROVED;
+    }
+
+    // Approve Method
+    public function approve(int $adminId): void
+    {
+    if (!$this->canBeApproved()) {
+        throw new \Exception('Only pending requests can be approved.');
+    }
+
+    $this->update([
+        'status' => BloodRequestStatus::APPROVED,
+        'approved_by' => $adminId,
+        'approved_at' => now(),
+    ]);
+    }
+
+    // Reject Method
+    public function reject(): void
+    {
+    if (!$this->canBeRejected()) {
+        throw new \Exception('Only pending requests can be rejected.');
+    }
+
+    $this->update([
+        'status' => BloodRequestStatus::REJECTED,
+    ]);
+    }
+
+    // Cancel Method
+    public function cancel(): void
+    {
+    if (!$this->canBeCancelled()) {
+        throw new \Exception('Only pending requests can be cancelled.');
+    }
+
+    $this->update([
+        'status' => BloodRequestStatus::CANCELLED,
+    ]);
+    }
+    
+    // Fulfill Method (After Donation Completed)
+    public function fulfill(): void
+    {
+     if (!$this->canBeFulfilled()) {
+        throw new \Exception('Only approved requests can be fulfilled.');
+    }
+
+    $this->update([
+        'status' => BloodRequestStatus::FULFILLED,
+    ]);
+    }
+
+    protected static function booted()
+    {
+    static::creating(function ($model) {
+        $model->blood_request_code = 'BR-' . strtoupper(uniqid());
+    });
+    }
+    
 }

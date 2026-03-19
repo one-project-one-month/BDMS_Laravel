@@ -9,9 +9,10 @@ use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\BloodInventoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Admin\BloodRequestController;
+use App\Http\Controllers\Api\Admin\MedicalRecordController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
-use App\Http\Controllers\Api\Admin\MedicalRecordController;
 use App\Http\Controllers\Api\User\CertificateController as UserCertificateController;
 use App\Http\Controllers\Api\User\AppointmentController as UserAppointmentController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,14 @@ Route::prefix('v1/')->group(function () {
         Route::patch('donors/{id}/deactivate', [UserController::class, 'deactivate']);
         Route::patch('donors/{id}/activate', [UserController::class, 'activate']);
         Route::apiResource('donors', DonorController::class);
+
+        // Blood Requests CRUD
+        Route::apiResource('blood-requests', BloodRequestController::class);
+
+        // Status Actions
+        Route::patch('blood-requests/{id}/approve', [BloodRequestController::class, 'approve']);
+        Route::patch('blood-requests/{id}/reject', [BloodRequestController::class, 'reject']);
+        Route::patch('blood-requests/{id}/cancel', [BloodRequestController::class, 'cancel']);
 
         Route::apiResource('announcements', AnnouncementController::class)->only('store', 'update', 'destory');
         Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
@@ -76,6 +85,8 @@ Route::prefix('v1/')->group(function () {
 
         Route::post('donors/{id}/restore', [DonorController::class, 'restore']);
         Route::delete('donors/{id}/force-delete', [DonorController::class, 'forceDelete']);
+
+        Route::patch('blood-requests/{id}/fulfill', [BloodRequestController::class, 'fulfill']);
 
         Route::post('announcements/{id}/restore', [AnnouncementController::class, 'restore']);
         Route::delete('announcements/{id}/force-delete', [AnnouncementController::class, 'forceDelete']);
