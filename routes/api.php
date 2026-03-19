@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\User\ProfileDonorController;
 use App\Http\Controllers\Api\Admin\MedicalRecordController;
 use App\Http\Controllers\Api\User\CertificateController as UserCertificateController;
 use App\Http\Controllers\Api\User\AppointmentController as UserAppointmentController;
+use App\Http\Controllers\Api\User\BloodRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -95,5 +96,9 @@ Route::prefix('v1/')->group(function () {
         Route::get("/{userId}/appointments", [UserAppointmentController::class, "index"]);
         Route::get("/{userId}/appointments/{id}", [UserAppointmentController::class, "show"]);
         Route::patch("/{userId}/appointments", [UserAppointmentController::class, "update"]);
+
+        //Blood Request Index and Store
+        Route::apiResource('blood-requests', BloodRequestController::class)->only('index', 'store');
+        Route::patch('blood-requests/{id}/cancel', [BloodRequestController::class, 'cancel']);
     });
 });
