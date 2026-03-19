@@ -1,11 +1,9 @@
 <?php
+
 namespace App\Http\Resources\Api\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
-class BloodRequestResource extends JsonResource
-{
     /**
      * Transform the resource into an array.
      *
@@ -23,10 +21,8 @@ class BloodRequestResource extends JsonResource
             'unitsRequired'    => $this->units_required,
             'reason'           => $this->reason,
             'status'           => $this->status,
-
             'hospital'         => new HospitalResource($this->whenLoaded('hospital')),
             'approvedBy'       => $this->whenLoaded('approvedBy'),
-
             'requiredDate'     => $this->required_date?->format('Y-m-d'),
             'approvedAt'       => $this->approved_at?->format('Y-m-d'),
             'createdAt'        => $this->created_at?->format('Y-m-d'),
