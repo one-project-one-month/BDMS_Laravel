@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 
-class MedicalRecordRequest extends FormRequest
+class MedicalRecordRequest extends BaseFormRequest
 {
     public function authorize(): bool
     {
@@ -53,17 +51,5 @@ class MedicalRecordRequest extends FormRequest
             'screening_by' => ['nullable', 'exists:users,id'],
             'screening_at' => ['nullable', 'date']
         ];
-    }
-
-    /**
-     * Custom API Error Response
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
     }
 }

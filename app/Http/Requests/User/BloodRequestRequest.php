@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\User;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
-class BloodRequestRequest extends FormRequest
+class BloodRequestRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,34 +23,24 @@ class BloodRequestRequest extends FormRequest
     public function rules(): array
     {
         //for cancel a blood request
-        if($this->isMethod('patch'))
-        {
-            return 
-            [
-                'status' => ['required', 'in:cancelled']
-            ];
+        if ($this->isMethod('patch')) {
+            return
+                [
+                    'status' => ['required', 'in:cancelled']
+                ];
         }
 
 
-        return 
-        [
-            'hospital_id' => ['required', 'exists:hospitals,id'],
-            'patient_name' => ['required', 'string'],
-            'blood_group' => ['required', Rule::in(\App\Enums\BloodGroup::values())],
-            'units_required' => ['required', 'integer'],
-            'contact_phone' => ['required', 'string'],
-            'urgency' => ['required', Rule::in(\App\Enums\Urgency::values())],
-            'required_date' => ['required', 'date', 'after_or_equal:today'],
-            'reason' => ['required', 'string']
-        ];  
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
+        return
+            [
+                'hospital_id' => ['required', 'exists:hospitals,id'],
+                'patient_name' => ['required', 'string'],
+                'blood_group' => ['required', Rule::in(\App\Enums\BloodGroup::values())],
+                'units_required' => ['required', 'integer'],
+                'contact_phone' => ['required', 'string'],
+                'urgency' => ['required', Rule::in(\App\Enums\Urgency::values())],
+                'required_date' => ['required', 'date', 'after_or_equal:today'],
+                'reason' => ['required', 'string']
+            ];
     }
 }
