@@ -19,6 +19,20 @@ class BloodRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => $this->userId,
+            'hospital_id' => $this->hospitalId,
+            'patient_name' => $this->patientName,
+            'blood_group' => $this->bloodGroup,
+            'units_required' => $this->unitsRequired,
+            'contact_phone' => $this->contactPhone,
+            'urgency' => $this->urgency,
+            'required_date' => $this->requiredDate,
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,7 +40,6 @@ class BloodRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
             'user_id' => 'required|exists:users,id',
             'hospital_id' => 'required|exists:hospitals,id',

@@ -30,19 +30,6 @@ class AnnouncementRequest extends FormRequest
         ]);
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'is_active'          => $this->isActive,
-            'expired_at'         => $this->expiredAt,
-        ]);
-    }
-
     public function rules(): array
     {
         return [
