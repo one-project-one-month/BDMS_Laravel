@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Admin\BloodInventoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\BloodRequestController;
 use App\Http\Controllers\Api\Admin\MedicalRecordController;
+use App\Http\Controllers\Api\User\HomeController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
 use App\Http\Controllers\Api\User\CertificateController as UserCertificateController;
@@ -112,6 +113,10 @@ Route::prefix('v1/')->group(function () {
 
     // User Only
     Route::middleware(['auth:sanctum', 'Role.check:3'])->group(function () {
+
+        // Home Routes
+        Route::get('/home', [HomeController::class, 'index']);
+
         // User Profile Routes
         Route::get('/users/{userId}', [ProfileController::class, 'show']);
         Route::put('/users/{userId}', [ProfileController::class, 'update']);
