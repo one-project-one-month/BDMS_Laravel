@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
-class AppointmentRequest extends FormRequest
+class AppointmentRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -56,16 +54,5 @@ class AppointmentRequest extends FormRequest
             'status' => 'required|in:scheduled, cancelled, confirmed, completed',
             'remarks' => 'nullable|string|max:255',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'success' => false,
-                'message' => 'Validation Error',
-                'errors' => $validator->errors(),
-            ], 422)
-        );
     }
 }

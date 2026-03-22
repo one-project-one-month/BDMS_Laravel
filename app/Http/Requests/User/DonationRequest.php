@@ -3,11 +3,10 @@
 namespace App\Http\Requests\User;
 
 use App\Enums\BloodGroup;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class DonationRequest extends FormRequest
+class DonationRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -55,16 +54,5 @@ class DonationRequest extends FormRequest
             'donation_date' => 'required|date|before_or_equal:today',
             'remarks' => 'nullable|string',
         ];
-    }
-
-    protected function failedAuthorization()
-    {
-        $donor = auth()->user()->donor;
-
-        if ($donor) {
-            throw new AuthorizationException('Donor profile is required to make a donation.');
-        }
-
-        throw new AuthorizationException('You must wait at least 3 months between blood donations for your safety.');
     }
 }

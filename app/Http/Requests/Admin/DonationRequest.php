@@ -4,12 +4,10 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\BloodGroup;
 use App\Enums\DonationStatus;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
-class DonationRequest extends FormRequest
+class DonationRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -55,20 +53,5 @@ class DonationRequest extends FormRequest
             'approved_at' => 'nullable|date',
             'remarks' => 'nullable|string',
         ];
-    }
-
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param Validator $validator
-     * @return void
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
     }
 }

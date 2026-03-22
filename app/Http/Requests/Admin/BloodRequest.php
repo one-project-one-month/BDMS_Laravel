@@ -2,14 +2,12 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\BloodGroup;
 use App\Enums\Urgency;
 
-class BloodRequest extends FormRequest
+class BloodRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -51,14 +49,5 @@ class BloodRequest extends FormRequest
             'required_date' => 'required|date|after_or_equal:today',
             'reason' => 'nullable|string',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
     }
 }
