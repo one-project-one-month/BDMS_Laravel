@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\User\ProfileDonorController;
 use App\Http\Controllers\Api\User\CertificateController as UserCertificateController;
 use App\Http\Controllers\Api\User\AppointmentController as UserAppointmentController;
 use App\Http\Controllers\Api\User\BloodRequestController as UserBloodRequestController;
+use App\Http\Controllers\Api\User\DonationController as UserDonationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -137,5 +138,11 @@ Route::prefix('v1/')->group(function () {
         // User Blood Request Routes
         Route::apiResource('blood-requests', UserBloodRequestController::class)->only('index', 'store');
         Route::patch('blood-requests/{id}/cancel', [UserBloodRequestController::class, 'cancel']);
+
+        // Donation Routes
+        Route::get('/{userId}/donations', [UserDonationController::class, 'index']);
+        Route::get('/{userId}/donations/{id}', [UserDonationController::class, 'show']);
+        Route::post('/{userId}/donations', [UserDonationController::class, 'store']);
+        Route::patch('/{userId}/donations/{id}/cancel', [UserDonationController::class, 'cancel']);
     });
 });
