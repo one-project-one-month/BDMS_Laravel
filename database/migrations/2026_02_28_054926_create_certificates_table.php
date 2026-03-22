@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('certificate_title');
             $table->string('certificate_description');
             $table->date('certificate_date');
+            $table->string('certificate_image');
             $table->timestamps();
             $table->softDeletesTz();
         });

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AnnouncementController;
 use App\Http\Controllers\Api\Admin\AppointmentsController;
+use App\Http\Controllers\Api\Admin\CertificateController;
 use App\Http\Controllers\Api\Admin\DonationController;
 use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
@@ -82,6 +83,9 @@ Route::prefix('v1/')->group(function () {
 
         // Dashboard Route
         Route::get('/dashboard', DashboardController::class);
+
+        // Certificate Route
+        Route::apiResource('certificates', CertificateController::class);
     });
 
     // Admin Only
