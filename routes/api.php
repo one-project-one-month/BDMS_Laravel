@@ -55,7 +55,8 @@ Route::prefix('v1/')->group(function () {
         Route::patch('blood-requests/{id}', [BloodRequestController::class, 'updateStatus']);
 
         // Announcement Routes
-        Route::apiResource('announcements', AnnouncementController::class)->only('store', 'update', 'destory');
+        Route::apiResource('announcements', AnnouncementController::class)->only('store', 'update');
+        Route::delete('/announcements/{id}', [AnnouncementController::class, 'destory']);
         Route::patch('announcements/{id}/deactivate', [AnnouncementController::class, 'deactivate']);
         Route::patch('announcements/{id}/activate', [AnnouncementController::class, 'activate']);
 
