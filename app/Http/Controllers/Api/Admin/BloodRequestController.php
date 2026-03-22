@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Models\BloodRequest;
+use App\Enums\BloodRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\Admin\BloodRequest as BloodRequestRequest;
 use App\Http\Resources\Api\Admin\BloodRequestResource;
+use App\Models\BloodRequest;
+use Illuminate\Support\Facades\Request;
 
 class BloodRequestController extends Controller
 {
@@ -82,79 +84,61 @@ class BloodRequestController extends Controller
     }
 
     /**
-     *  Approve Endpoint
+     * Update blood request status (approve, reject, cancel, fulfill)
      */
-   
-    public function approve($id)
+    public function updateStatus(Request $request, $id)
     {
-    $bloodRequest = BloodRequest::findOrFail($id);
+        $request->validate([
+            'action' => 'required|string|in:approve,reject,cancel,fulfill',
+        ]);
 
-    try {
-        $bloodRequest->approve(auth()->id());
+        $bloodRequest = BloodRequest::findOrFail($id);
+        $action = $request->action;
 
-        return $this->successResponse(
-            'Blood Request Approved Successfully',
-            new BloodRequestResource($bloodRequest)
-        );
-    } catch (\Exception $e) {
-        return $this->errorResponse($e->getMessage(), 400);
-    }
-    }
+        try {
+            if (in_array($action, ['approve', 'reject']) && $bloodRequest->status !== BloodRequestStatus::PENDING->value) {
+                return $this->errorResponse("Action failed. Current status is " . $bloodRequest->status->value, 400);
+            }
 
-    /**
-     *  Reject Endpoint
-     */
-    public function reject($id)
-    {
-    $bloodRequest = BloodRequest::findOrFail($id);
+            // Approved -> Fullfill
+            if ($action === 'fulfill' && $bloodRequest->status !== BloodRequestStatus::APPROVED->value) {
+                return $this->errorResponse("Only approved requests can be fulfilled.", 400);
+            }
 
-    try {
-        $bloodRequest->reject();
+            $updateData = match ($action) {
+                'approve' => [
+                    'status' => BloodRequestStatus::APPROVED->value,
+                    'approved_by' => auth()->id(),
+                    'approved_at' => now(),
+                ],
+                'reject' => [
+                    'status' => BloodRequestStatus::REJECTED->value,
+                ],
+                'cancel' => [
+                    'status' => BloodRequestStatus::CANCELLED->value,
+                ],
+                'fulfill' => [
+                    'status' => BloodRequestStatus::FULFILLED->value,
+                ],
+            };
 
-        return $this->successResponse(
-            'Blood Request Rejected Successfully',
-            new BloodRequestResource($bloodRequest)
-        );
-    } catch (\Exception $e) {
-        return $this->errorResponse($e->getMessage(), 400);
-    }
-    }
+            $bloodRequest->update($updateData);
 
-    /**
-     *  Cancel Endpoint
-     */
-    public function cancel($id)
-    {
-    $bloodRequest = BloodRequest::findOrFail($id);
+            $messages = [
+                'approve' => 'Blood request has been approved.',
+                'reject' => 'Blood request has been rejected.',
+                'cancel' => 'Blood request has been cancelled.',
+                'fulfill' => 'Blood request has been marked as fulfilled.',
+            ];
 
-    try {
-        $bloodRequest->cancel();
+            return $this->successResponse(
+                $messages[$action],
+                new BloodRequestResource($bloodRequest->load(['hospital', 'user'])),
+                200
+            );
 
-        return $this->successResponse(
-            'Blood Request Cancelled Successfully',
-            new BloodRequestResource($bloodRequest)
-        );
-    } catch (\Exception $e) {
-        return $this->errorResponse($e->getMessage(), 400);
-    }
-    }
-
-    /**
-     *  Fullfil Endpoint
-     */
-    public function fulfill($id)
-    {
-    $bloodRequest = BloodRequest::findOrFail($id);
-
-    try {
-        $bloodRequest->fulfill();
-
-        return $this->successResponse(
-            'Blood Request Fulfilled Successfully',
-            new BloodRequestResource($bloodRequest)
-        );
-    } catch (\Exception $e) {
-        return $this->errorResponse($e->getMessage(), 400);
-    }
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
     }
 }

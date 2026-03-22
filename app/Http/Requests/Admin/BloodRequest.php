@@ -28,15 +28,15 @@ class BloodRequest extends FormRequest
     {
 
         return [
-            'user_id'        => 'required|exists:users,id',
-            'hospital_id'    => 'required|exists:hospitals,id',
-            'patient_name'   => 'required|string|max:255',
-            'blood_group'    => ['required', new Enum(BloodGroup::class)],
+            'user_id' => 'required|exists:users,id',
+            'hospital_id' => 'required|exists:hospitals,id',
+            'patient_name' => 'required|string|max:255',
+            'blood_group' => ['required', new Enum(BloodGroup::class)],
             'units_required' => 'required|integer|min:1',
-            'contact_phone'  => 'required|string|max:20',
-            'urgency'        => ['required', new Enum(Urgency::class)],
-            'required_date'  => 'required|date|after_or_equal:today',
-            'reason'         => 'nullable|string',
+            'contact_phone' => 'required|string|max:20',
+            'urgency' => ['required', new Enum(Urgency::class)],
+            'required_date' => 'required|date|after_or_equal:today',
+            'reason' => 'nullable|string',
         ];
     }
 
