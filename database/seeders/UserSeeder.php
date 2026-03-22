@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
     {
         $adminRole = Role::where('name', 'admin')->first();
         $staffRole = Role::where('name', 'staff')->first();
+        $userRole = Role::where('name', 'user')->first();
 
         $hospitals = Hospital::orderBy('id')->take(3)->get();
 
@@ -23,9 +24,9 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@bdms.com'],
             [
-                'role_id'   => $adminRole->id,
+                'role_id' => $adminRole->id,
                 'user_name' => 'System Admin',
-                'password'  => 'password',
+                'password' => 'password',
                 'is_active' => true,
             ]
         );
@@ -40,6 +41,20 @@ class UserSeeder extends Seeder
                     'role_id' => $staffRole->id,
                     'hospital_id' => $hospital->id,
                     'user_name' => "Staff {$staffNumber}",
+                    'password' => 'password123',
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        # User
+        for ($i = 0; $i < 10; $i++) {
+            User::firstOrCreate(
+                ['email' => fake()->unique()->safeEmail()],
+                [
+                    'role_id' => $userRole->id,
+                    'hospital_id' => $hospitals->random()->id,
+                    'user_name' => fake()->name(),
                     'password' => 'password123',
                     'is_active' => true,
                 ]
