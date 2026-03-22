@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Admin\AppointmentsController;
 use App\Http\Controllers\Api\Admin\CertificateController;
 use App\Http\Controllers\Api\Admin\DonationController;
 use App\Http\Controllers\Api\Admin\DonorController;
+use App\Http\Controllers\Api\Admin\HospitalController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
@@ -60,7 +61,9 @@ Route::prefix('v1/')->group(function () {
 
         // Role Routes
         Route::get('/roles', [RoleController::class, 'index']);
-        Route::apiResource('users', ProfileController::class);
+
+        // Hospital Routes
+        Route::get('/hospitals', [HospitalController::class, 'index']);
 
         // Donation Routes
         Route::apiResource('donations', DonationController::class);
