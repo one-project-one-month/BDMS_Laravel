@@ -63,8 +63,15 @@ Route::prefix('v1/')->group(function () {
         Route::apiResource('donations', DonationController::class);
 
         // Appointments Routes
-        Route::apiResource('appointments', AppointmentsController::class);
-        Route::patch('appointments/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
+        Route::prefix('/appointments')->group(function () {
+            Route::post('/donation', [AppointmentsController::class, 'storeDonationAppointment']);
+            Route::post('/blood-request', [AppointmentsController::class, 'storeBloodRequestAppointment']);
+            Route::get('/', [AppointmentsController::class, 'index']);
+            Route::get('/{id}', [AppointmentsController::class, 'show']);
+            Route::put('/{id}', [AppointmentsController::class, 'update']);
+            Route::delete('/{id}', [AppointmentsController::class, 'destory']);
+            Route::patch('/{id}/toggle-status', [AppointmentsController::class, 'toggleStatus']);
+        });
 
         // Blood Inventory Routes
         Route::apiResource('blood-inventories', BloodInventoryController::class)->except('destory');
@@ -116,7 +123,7 @@ Route::prefix('v1/')->group(function () {
         // User Appointment Routes
         Route::get("/{userId}/appointments", [UserAppointmentController::class, "index"]);
         Route::get("/{userId}/appointments/{id}", [UserAppointmentController::class, "show"]);
-        Route::patch("/{userId}/appointments", [UserAppointmentController::class, "update"]);
+        Route::patch("/{userId}/appointments/{id}", [UserAppointmentController::class, "update"]);
 
         // User Blood Request Routes
         Route::apiResource('blood-requests', UserBloodRequestController::class)->only('index', 'store');

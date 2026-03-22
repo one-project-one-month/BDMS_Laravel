@@ -96,29 +96,29 @@ class BloodRequestController extends Controller
         $action = $request->action;
 
         try {
-            if (in_array($action, ['approve', 'reject']) && $bloodRequest->status !== BloodRequestStatus::PENDING) {
+            if (in_array($action, ['approve', 'reject']) && $bloodRequest->status !== BloodRequestStatus::PENDING->value) {
                 return $this->errorResponse("Action failed. Current status is " . $bloodRequest->status->value, 400);
             }
 
             // Approved -> Fullfill
-            if ($action === 'fulfill' && $bloodRequest->status !== BloodRequestStatus::APPROVED) {
+            if ($action === 'fulfill' && $bloodRequest->status !== BloodRequestStatus::APPROVED->value) {
                 return $this->errorResponse("Only approved requests can be fulfilled.", 400);
             }
 
             $updateData = match ($action) {
                 'approve' => [
-                    'status' => BloodRequestStatus::APPROVED,
+                    'status' => BloodRequestStatus::APPROVED->value,
                     'approved_by' => auth()->id(),
                     'approved_at' => now(),
                 ],
                 'reject' => [
-                    'status' => BloodRequestStatus::REJECTED,
+                    'status' => BloodRequestStatus::REJECTED->value,
                 ],
                 'cancel' => [
-                    'status' => BloodRequestStatus::CANCELLED,
+                    'status' => BloodRequestStatus::CANCELLED->value,
                 ],
                 'fulfill' => [
-                    'status' => BloodRequestStatus::FULFILLED,
+                    'status' => BloodRequestStatus::FULFILLED->value,
                 ],
             };
 
