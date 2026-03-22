@@ -77,10 +77,9 @@ class UserController extends Controller
             return $this->successResponse(
                 'User retrieved successfully',
                 $this->buildPaginatedResourceResponse(UserResource::class, $users),
-                200
             );
         } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
