@@ -31,9 +31,22 @@ class BloodInventory extends Model
         'status'       => BloodInventoryStatus::class,
     ];
 
+    public static function expireIfNeeded(): int
+    {
+        return self::query()
+            ->where('status', BloodInventoryStatus::AVAILABLE->value)
+            ->whereNotNull('expired_at')
+            ->whereDate('expired_at', '<=', now()->toDateString())
+            ->update(['status' => BloodInventoryStatus::EXPIRED->value]);
+    }
+
     public function scopeAvailableUnitsByHospital($query)
     {
         return $query->where('status', BloodInventoryStatus::AVAILABLE)
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                    ->orWhereDate('expired_at', '>', now()->toDateString());
+            })
             ->selectRaw('hospital_id, SUM(units) as total_units')
             ->groupBy('hospital_id');
     }

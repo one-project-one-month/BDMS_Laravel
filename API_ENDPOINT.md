@@ -185,9 +185,11 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ## 📤 Blood Inventories APIs
 
-| Method | Endpoint                    | Description     | Note |
-| ------ | --------------------------- | --------------- | ---- |
-| GET    | `/blood-inventories/totals` | Get total blood |      |
+| Method | Endpoint                    | Description                    | Note |
+| ------ | --------------------------- | ------------------------------ | ---- |
+| GET    | `/blood-inventories/`       | List all blood-inventories     |      |
+| GET    | `/blood-inventories/{id}`   | Show blood-inventory detail    |      |
+| PUT    | `/blood-inventories/{id}`   | Update blood-inventory         |      |
 
 ---
 

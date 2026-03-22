@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AnnouncementSeeder::class,
             DonorSeeder::class,
+            BloodInventorySeeder::class,
         ]);
     }
 }
