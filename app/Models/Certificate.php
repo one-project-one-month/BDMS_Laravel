@@ -14,6 +14,7 @@ class Certificate extends Model
         'certificate_title',
         'certificate_description',
         'certificate_date',
+        'cetificate_image'
     ];
 
     protected $casts = [
