@@ -17,6 +17,18 @@ class AppointmentRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => $this->userId,
+            'hospital_id' => $this->hospitalId,
+            'donation_id' => $this->donationId,
+            'blood_request_id' => $this->bloodRequestId,
+            'appointment_date' => $this->appointmentDate,
+            'appointment_time' => $this->appointmentTime,
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,8 +37,7 @@ class AppointmentRequest extends FormRequest
     public function rules(): array
     {
         //for toggle status
-        if($this->isMethod('patch')) 
-        {
+        if ($this->isMethod('patch')) {
             return [
                 'status' => [
                     'required',
@@ -45,18 +56,6 @@ class AppointmentRequest extends FormRequest
             'status' => 'required|in:scheduled, cancelled, confirmed, completed',
             'remarks' => 'nullable|string|max:255',
         ];
-    }
-
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'user_id' => $this->userId,
-            'hospital_id' => $this->hospitalId,
-            'donation_id' => $this->donationId,
-            'blood_request_id' => $this->bloodRequestId,
-            'appointment_date' => $this->appointmentDate,
-            'appointment_time' => $this->appointmentTime,
-        ]);
     }
 
     protected function failedValidation(Validator $validator)
