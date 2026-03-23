@@ -11,9 +11,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Schema(
  * schema="UserResource",
  * title="User Resource",
- * description="User model data wrapper",
  * @OA\Property(property="id", type="integer", example=1),
+ * @OA\Property(property="roleId", type="integer", example=3),
+ * @OA\Property(
+ * property="role",
+ * ref="#/components/schemas/RoleResource"
+ * ),
  * @OA\Property(property="hospitalId", type="integer", example=1),
+ * @OA\Property(
+ * property="user",
+ * ref="#/components/schemas/HospitalResource"
+ * ),
  * @OA\Property(property="userName", type="string", example="Aung Aung"),
  * @OA\Property(property="email", type="string", format="email", example="aung@example.com"),
  * @OA\Property(property="isActive", type="boolean", example=true),

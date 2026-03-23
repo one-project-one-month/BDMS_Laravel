@@ -11,6 +11,37 @@ use Illuminate\Http\Request;
 class AppointmentController extends Controller
 {
     use ApiResponse;
+
+    /**
+     * @OA\Get(
+     * path="/api/v1/{userId}/appointments",
+     * summary="Retrieve all appointments for a specific user",
+     * tags={"Appointment For Client"},
+     * security={{"sanctum": {}}},
+     * @OA\Parameter(
+     * name="userId",
+     * in="path",
+     * description="ID of the user",
+     * required=true,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful retrieval",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="message", type="string", example="Appointment retrieved successfully"),
+     * @OA\Property(
+     * property="data",
+     * type="array",
+     * @OA\Items(ref="#/components/schemas/UserAppointmentResource")
+     * )
+     * )
+     * ),
+     * @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
     public function index($userId)
     {
         try {
@@ -22,6 +53,40 @@ class AppointmentController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     * path="/api/v1/{userId}/appointments/{id}",
+     * summary="Get details of a specific appointment",
+     * tags={"Appointment For Client"},
+     * security={{"sanctum": {}}},
+     * @OA\Parameter(
+     * name="userId",
+     * in="path",
+     * description="User ID",
+     * required=true,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="Appointment ID",
+     * required=true,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Successful retrieval",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="message", type="string", example="Appointment retrieved successfully"),
+     * @OA\Property(property="data", ref="#/components/schemas/UserAppointmentResource")
+     * )
+     * ),
+     * @OA\Response(response=404, description="Appointment not found"),
+     * @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
     public function show($userId, $id)
     {
         try {
@@ -40,6 +105,46 @@ class AppointmentController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     * path="/api/v1/{userId}/appointments/{id}",
+     * summary="Update or cancel an appointment",
+     * tags={"Appointment For Client"},
+     * security={{"sanctum": {}}},
+     * @OA\Parameter(
+     * name="userId",
+     * in="path",
+     * description="User ID",
+     * required=true,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="Appointment ID",
+     * required=true,
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="cancelled"),
+     * @OA\Property(property="remarks", type="string", example="User cannot attend due to emergency")
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Appointment updated successfully",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="data", ref="#/components/schemas/UserAppointmentResource")
+     * )
+     * ),
+     * @OA\Response(response=404, description="Appointment not found"),
+     * @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
     public function update($userId, $id, Request $request)
     {
         try {

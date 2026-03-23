@@ -140,6 +140,12 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 # User API Endpoints
 
+## ⛺ Home APIs
+
+| Method | Endpoint | Description             | Note |
+| ------ | -------- | ----------------------- | ---- |
+| GET    | `/home`  | Get user home page data |      |
+
 ## 🙍‍♂️ Profiles APIs
 
 | Method | Endpoint                 | Description         | Note |
@@ -153,12 +159,12 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ## 🎉 Donations APIs
 
-| Method | Endpoint                   | Description              | Note |
-| ------ | -------------------------- | ------------------------ | ---- |
-| GET    | `/{userId}/donations`      | Get user all donations   |      |
-| POST   | `/{userId}/donations`      | Create donation          |      |
-| GET    | `/{userId}/donations/{id}` | Get user donation Detail |      |
-| PATCH  | `/{userId}/donations/{id}` | Cancel donation          |      |
+| Method | Endpoint                          | Description              | Note |
+| ------ | --------------------------------- | ------------------------ | ---- |
+| GET    | `/{userId}/donations`             | Get user all donations   |      |
+| POST   | `/{userId}/donations`             | Create donation          |      |
+| GET    | `/{userId}/donations/{id}`        | Get user donation Detail |      |
+| PATCH  | `/{userId}/donations/{id}/cancel` | Cancel donation          |      |
 
 ---
 
@@ -175,21 +181,21 @@ This document lists all API endpoints for the Blood Donation Management System.
 
 ## 📝 Apponitments APIs
 
-| Method | Endpoint                      | Description                 | Note |
-| ------ | ----------------------------- | --------------------------- | ---- |
-| GET    | `/{userId}/appointments`      | Get user all appointments   |      |
-| GET    | `/{userId}/appointments/{id}` | Get user appointment Detail |      |
-| PATCH  | `/{userId}/appointments/{id}` | Cancel appointment          |      |
+| Method | Endpoint                             | Description                 | Note |
+| ------ | ------------------------------------ | --------------------------- | ---- |
+| GET    | `/{userId}/appointments`             | Get user all appointments   |      |
+| GET    | `/{userId}/appointments/{id}`        | Get user appointment Detail |      |
+| PATCH  | `/{userId}/appointments/{id}/cancel` | Cancel appointment          |      |
 
 ---
 
 ## 📤 Blood Inventories APIs
 
-| Method | Endpoint                    | Description                    | Note |
-| ------ | --------------------------- | ------------------------------ | ---- |
-| GET    | `/blood-inventories/`       | List all blood-inventories     |      |
-| GET    | `/blood-inventories/{id}`   | Show blood-inventory detail    |      |
-| PUT    | `/blood-inventories/{id}`   | Update blood-inventory         |      |
+| Method | Endpoint                  | Description                 | Note |
+| ------ | ------------------------- | --------------------------- | ---- |
+| GET    | `/blood-inventories/`     | List all blood-inventories  |      |
+| GET    | `/blood-inventories/{id}` | Show blood-inventory detail |      |
+| PUT    | `/blood-inventories/{id}` | Update blood-inventory      |      |
 
 ---
 

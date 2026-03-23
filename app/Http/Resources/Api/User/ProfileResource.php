@@ -5,6 +5,19 @@ namespace App\Http\Resources\Api\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ * schema="ProfileUserResource",
+ * title="Profile User Resource (User Only)",
+ * @OA\Property(property="id", type="integer", example=1),
+ * @OA\Property(property="roleId", type="integer", example=3),
+ * @OA\Property(property="hospitalId", type="integer", example=1),
+ * @OA\Property(property="userName", type="string", example="John Doe"),
+ * @OA\Property(property="email", type="string", example="johndoe@example.com"),
+ * @OA\Property(property="isActive", type="boolean", example="true"),
+ * @OA\Property(property="createdAt", type="boolean", example="true")
+ * )
+ */
 class ProfileResource extends JsonResource
 {
     /**
