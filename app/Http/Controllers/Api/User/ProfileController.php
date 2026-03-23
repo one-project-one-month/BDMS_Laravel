@@ -48,9 +48,11 @@ class ProfileController extends Controller
             return $this->errorResponse('User not found.', 404);
         }
 
-        if (Auth::id() !== $user->id) {
+        if (Auth::id() !== (int) $userId) {
             return $this->errorResponse('Unauthorized access to this profile.', 403);
         }
+
+        $user->load('donor');
 
         return $this->successResponse(
             'Profile retrieved successfully',
