@@ -140,7 +140,7 @@ Route::prefix('v1/')->group(function () {
         Route::patch("/{userId}/appointments/{id}", [UserAppointmentController::class, "update"]);
 
         // User Blood Request Routes
-        Route::apiResource('blood-requests', UserBloodRequestController::class)->only('index', 'store');
+        Route::apiResource('/{userId}/blood-requests', UserBloodRequestController::class)->only('index', 'store');
         Route::patch('blood-requests/{id}/cancel', [UserBloodRequestController::class, 'cancel']);
 
         // Donation Routes

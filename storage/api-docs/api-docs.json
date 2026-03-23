@@ -2432,10 +2432,1172 @@
                     }
                 ]
             }
+        },
+        "/api/v1/{userId}/appointments": {
+            "get": {
+                "tags": [
+                    "Appointment For Client"
+                ],
+                "summary": "Retrieve all appointments for a specific user",
+                "operationId": "da0ed0bd52b351234a0c7705eafaee12",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Appointment retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserAppointmentResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/appointments/{id}": {
+            "get": {
+                "tags": [
+                    "Appointment For Client"
+                ],
+                "summary": "Get details of a specific appointment",
+                "operationId": "53d43befc0957672e23b65dcdeabff07",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Appointment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Appointment retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAppointmentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Appointment For Client"
+                ],
+                "summary": "Update or cancel an appointment",
+                "operationId": "32dafb26c9928457d8b863cf1c4f3258",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Appointment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "cancelled"
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "User cannot attend due to emergency"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Appointment updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAppointmentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/blood-requests": {
+            "get": {
+                "tags": [
+                    "Blood Request For Client"
+                ],
+                "summary": "List all blood request for user",
+                "operationId": "d3713a6e3885b64d7dd7dfc4511a9dc3",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blood Requests retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserBloodRequestResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Blood Request For Client"
+                ],
+                "summary": "Create new blood request",
+                "operationId": "40824cf805a095af80a6d86d207701c4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "hospitalId",
+                                    "patientName",
+                                    "bloodGroup",
+                                    "unitsRequired",
+                                    "contactPhone",
+                                    "urgency",
+                                    "requiredDate"
+                                ],
+                                "properties": {
+                                    "hospitalId": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "patientName": {
+                                        "type": "string",
+                                        "example": "Mg Mg"
+                                    },
+                                    "bloodGroup": {
+                                        "type": "string",
+                                        "example": "A+"
+                                    },
+                                    "unitsRequired": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "contactPhone": {
+                                        "type": "string",
+                                        "example": "09123456789"
+                                    },
+                                    "urgency": {
+                                        "type": "string",
+                                        "example": "urgent"
+                                    },
+                                    "requiredDate": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-25"
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Emergency Surgery"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserBloodRequestResource"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/blood-requests/{id}/cancel": {
+            "patch": {
+                "tags": [
+                    "Blood Request For Client"
+                ],
+                "summary": "Cancel for blood request",
+                "operationId": "4c2071c15313d8c4aac63bad76fcc2db",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Blood Request ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserBloodRequestResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/certificates": {
+            "get": {
+                "tags": [
+                    "Certificate For Client"
+                ],
+                "summary": "Get all certificates for a specific user",
+                "operationId": "35caa65bc682d8e9627b170a0b9824a0",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user to fetch certificates for",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Certificates retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserCertificateResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/certificates/{id}": {
+            "get": {
+                "tags": [
+                    "Certificate For Client"
+                ],
+                "summary": "Get details of a specific certificate",
+                "operationId": "fd97e8e5020d23a357e0b8b9ca84292f",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Certificate ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Certificate retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserCertificateResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Certificate not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/donations": {
+            "get": {
+                "tags": [
+                    "Donation For Client"
+                ],
+                "summary": "Get donation history for a specific user",
+                "operationId": "8c009d37f81615063d2d5e953c124e4c",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserDonationResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Donation For Client"
+                ],
+                "summary": "Create a new donation record",
+                "operationId": "f0a9f2e325725d3aa2c3acb33b21f7ed",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "hospital_id",
+                                    "blood_group",
+                                    "units"
+                                ],
+                                "properties": {
+                                    "hospital_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "blood_group": {
+                                        "type": "string",
+                                        "example": "B+"
+                                    },
+                                    "units": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "First time donor"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Donation created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserDonationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/donations/{id}": {
+            "get": {
+                "tags": [
+                    "Donation For Client"
+                ],
+                "summary": "Get details of a specific donation record",
+                "operationId": "12b05a53596f0a3a77e51cfbb488d466",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Donation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserDonationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Donation record not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/{userId}/donations/{id}/cancel": {
+            "patch": {
+                "tags": [
+                    "Donation For Client"
+                ],
+                "summary": "Cancel a pending donation",
+                "operationId": "4f8288a7f0e3474b0126c603cea2238b",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Donation cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserDonationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Cannot cancel a non-pending donation"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/home": {
+            "get": {
+                "tags": [
+                    "Home For Client"
+                ],
+                "summary": "Get dashboard data for the user home screen",
+                "description": "Returns the user's next upcoming appointment and a list of available blood units grouped by hospital.",
+                "operationId": "3971ec06b3e1ad3d90931920c2d30885",
+                "responses": {
+                    "200": {
+                        "description": "Home data retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Home data fetched successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HomeDataResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{userId}": {
+            "get": {
+                "tags": [
+                    "Profile For Client"
+                ],
+                "summary": "Get user profile details",
+                "operationId": "1655f9d7a32d5e14b4eafcff71576637",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProfileUserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access to this profile"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Profile For Client"
+                ],
+                "summary": "Update user profile information",
+                "operationId": "b4b06544bb157f29287cb70db7a2ecb4",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userName": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "hospitalId": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProfileUserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access to this profile"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{userId}/donors": {
+            "get": {
+                "tags": [
+                    "Donor Profile For Client"
+                ],
+                "summary": "Retrieve the donor profile for a specific user",
+                "operationId": "e0f2413fab5a3c978e2f2a9c0c8fb033",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Donor profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User donor profile retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProfileDonorResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Donor Profile For Client"
+                ],
+                "summary": "Create a new donor profile for a user",
+                "operationId": "ad6ba41d066941c66a5ae2bbc74b55b0",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nrcNo",
+                                    "dateOfBirth",
+                                    "gender",
+                                    "bloodGroup",
+                                    "weight"
+                                ],
+                                "properties": {
+                                    "nrcNo": {
+                                        "type": "string",
+                                        "example": "12/XXX(C)123456"
+                                    },
+                                    "dateOfBirth": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1995-05-20"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "example": "male"
+                                    },
+                                    "bloodGroup": {
+                                        "type": "string",
+                                        "example": "O+"
+                                    },
+                                    "weight": {
+                                        "type": "integer",
+                                        "example": 65
+                                    },
+                                    "emergencyContact": {
+                                        "type": "string",
+                                        "example": "Daw Mya"
+                                    },
+                                    "emergencyPhone": {
+                                        "type": "string",
+                                        "example": "09777123456"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "No. 12, Pyay Road, Yangon"
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Regular donor"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Donor profile created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProfileDonorResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Donor profile already exists for this user"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "HomeDataResponse": {
+                "title": "Home Data Response",
+                "properties": {
+                    "upcomingAppointment": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "hospitalName": {
+                                "type": "string",
+                                "example": "Yangon General Hospital"
+                            },
+                            "appointmentDate": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "2026-03-25"
+                            },
+                            "appointmentTime": {
+                                "type": "string",
+                                "example": "10:00 AM"
+                            },
+                            "status": {
+                                "type": "string",
+                                "example": "confirmed"
+                            },
+                            "remarks": {
+                                "type": "string",
+                                "example": "Please bring your donor card."
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "REQUEST",
+                                    "DONATION"
+                                ],
+                                "example": "DONATION"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "bloodUnitsByHospital": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "hospitalId": {
+                                    "type": "integer",
+                                    "example": 5
+                                },
+                                "hospitalName": {
+                                    "type": "string",
+                                    "example": "City Care Clinic"
+                                },
+                                "inventory": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "bloodGroup": {
+                                                "type": "string",
+                                                "example": "O+"
+                                            },
+                                            "totalUnits": {
+                                                "type": "integer",
+                                                "example": 12
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "AnnouncementResource": {
                 "title": "Announcement Resource",
                 "description": "Announcement model data wrapper",
@@ -2636,21 +3798,69 @@
                     "name": {
                         "type": "string",
                         "example": "Yangon General Hospital"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Rosemary Street"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "09xxxxxxxx"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "ygn@hospital.com"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "isVerified": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleResource": {
+                "title": "Role Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "user"
                     }
                 },
                 "type": "object"
             },
             "UserResource": {
                 "title": "User Resource",
-                "description": "User model data wrapper",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "example": 1
                     },
+                    "roleId": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleResource"
+                    },
                     "hospitalId": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/HospitalResource"
                     },
                     "userName": {
                         "type": "string",
@@ -2669,6 +3879,270 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2026-03-01T10:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "UserAppointmentResource": {
+                "title": "User Appointment details for blood donation/request (User Only)",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "hospitalId": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "hospital": {
+                        "$ref": "#/components/schemas/HospitalResource"
+                    },
+                    "bloodRequestId": {
+                        "type": "integer",
+                        "example": 101
+                    },
+                    "appointmentDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-25"
+                    },
+                    "appointmentTime": {
+                        "type": "string",
+                        "example": "10:30 AM"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "scheduled"
+                    },
+                    "remarks": {
+                        "type": "string",
+                        "example": "Please fast for 4 hours before the appointment."
+                    }
+                },
+                "type": "object"
+            },
+            "UserBloodRequestResource": {
+                "title": "User Blood Request Resource (User Only)",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "hospitalId": {
+                        "type": "integer",
+                        "example": 45
+                    },
+                    "hospital": {
+                        "$ref": "#/components/schemas/HospitalResource"
+                    },
+                    "bloodType": {
+                        "type": "string",
+                        "example": "O+"
+                    },
+                    "unitsRequired": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "reason": {
+                        "type": "string",
+                        "example": "Emergency Surgery"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
+                    }
+                },
+                "type": "object"
+            },
+            "UserCertificateResource": {
+                "title": "User Certificate Resource (User Only)",
+                "description": "Certificate details mapping",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "certificateTitle": {
+                        "type": "string",
+                        "example": "Blood Donation Hero"
+                    },
+                    "certificateDescription": {
+                        "type": "string",
+                        "example": "Awarded for 5th donation"
+                    },
+                    "certificateImage": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://bdms.cloud/storage/cert.jpg"
+                    },
+                    "certificateDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-23"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2026-03-23 10:41:58"
+                    }
+                },
+                "type": "object"
+            },
+            "UserDonationResource": {
+                "title": "User Donation Resource (User Only)",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "donorId": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "hospitalName": {
+                        "type": "string",
+                        "example": "Yangon Hospital"
+                    },
+                    "bloodGroup": {
+                        "type": "string",
+                        "example": "A+"
+                    },
+                    "donationDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "01-01-20xx"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "approvedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "01-01-20xx"
+                    },
+                    "remarks": {
+                        "type": "string",
+                        "example": "Hello from BDMS Laravel!"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "01-01-20xx 12:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileDonorResource": {
+                "title": "Profile Donor Resource (User Only)",
+                "properties": {
+                    "donorId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nrcNo": {
+                        "type": "string",
+                        "example": "12/xxx(C)xxxxxx"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "01-01-19xx"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "example": "male"
+                    },
+                    "bloodGroup": {
+                        "type": "string",
+                        "example": "A+"
+                    },
+                    "weight": {
+                        "type": "integer",
+                        "example": "56"
+                    },
+                    "lastDonationDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "01-01-20xx"
+                    },
+                    "remarks": {
+                        "type": "string",
+                        "example": "Hello from BDMS!"
+                    },
+                    "emergencyContact": {
+                        "type": "string",
+                        "example": "U Mg Mg"
+                    },
+                    "emergencyPhone": {
+                        "type": "string",
+                        "example": "09xxxxxxxxx"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Yangon"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "created_at": {
+                        "type": "boolean",
+                        "example": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileUserResource": {
+                "title": "Profile User Resource (User Only)",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "roleId": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "hospitalId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "userName": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "johndoe@example.com"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "createdAt": {
+                        "type": "boolean",
+                        "example": "true"
                     }
                 },
                 "type": "object"
@@ -2706,6 +4180,34 @@
         {
             "name": "Authentication",
             "description": "API Endpoints for User Authentication"
+        },
+        {
+            "name": "Appointment For Client",
+            "description": "Appointment For Client"
+        },
+        {
+            "name": "Blood Request For Client",
+            "description": "Blood Request For Client"
+        },
+        {
+            "name": "Certificate For Client",
+            "description": "Certificate For Client"
+        },
+        {
+            "name": "Donation For Client",
+            "description": "Donation For Client"
+        },
+        {
+            "name": "Home For Client",
+            "description": "Home For Client"
+        },
+        {
+            "name": "Profile For Client",
+            "description": "Profile For Client"
+        },
+        {
+            "name": "Donor Profile For Client",
+            "description": "Donor Profile For Client"
         }
     ]
 }
