@@ -21,16 +21,16 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::before(function ($user, $ability) {
-            # admin - allows everything
-            if ($user->role?->name === config('roles.admin')) {
-                return true;
-            }
-        });
+        // Gate::before(function ($user, $ability) {
+        //     # admin - allows everything
+        //     if ($user->role?->name === config('roles.admin')) {
+        //         return true;
+        //     }
+        // });
 
-        # Dynamically register all permissions
-        Permission::pluck('name')->each(function ($permission) {
-            Gate::define($permission, fn($user) => $user->hasPermission($permission));
-        });
+        // # Dynamically register all permissions
+        // Permission::pluck('name')->each(function ($permission) {
+        //     Gate::define($permission, fn($user) => $user->hasPermission($permission));
+        // });
     }
 }
