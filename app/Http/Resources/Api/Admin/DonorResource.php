@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Api\Admin;
 
 use App\Http\Resources\Api\Admin\UserResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,10 +34,17 @@ class DonorResource extends JsonResource
             "id" => $this->id,
             "userId" => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),
+            'nrcNo' => $this->nrc_no,
             'bloodGroup' => $this->blood_group,
             'gender' => $this->gender,
-            'age' => \Carbon\Carbon::parse($this->date_of_birth)->age,
-            'lastDonation' => $this->last_donation_date?->format('Y-m-d'),
+            'dateOfBirth' => $this->date_of_birth->format('d-m-Y'),
+            'age' => Carbon::parse($this->date_of_birth)->age,
+            'weight' => $this->weight,
+            'emergencyContact' => $this->emergency_contact,
+            'emergencyPhone' => $this->emergency_phone,
+            'address' => $this->address,
+            'remarks' => $this->remarks,
+            'lastDonation' => $this->last_donation_date?->format('d-m-Y'),
             'isActive' => $this->is_active,
         ];
     }

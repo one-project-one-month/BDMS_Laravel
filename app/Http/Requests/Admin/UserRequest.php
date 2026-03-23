@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
-class UserRequest extends FormRequest
+class UserRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +22,8 @@ class UserRequest extends FormRequest
     {
         $data = [
             'hospital_id' => $this->hospitalId,
-            'role_id'     => $this->roleId,
-            'user_name'   => $this->userName,
+            'role_id' => $this->roleId,
+            'user_name' => $this->userName,
             'is_active' => $this->has('isActive')
                 ? filter_var($this->isActive, FILTER_VALIDATE_BOOLEAN)
                 : true,
@@ -44,25 +42,16 @@ class UserRequest extends FormRequest
         $userId = $this->route('user');
 
         return [
-            'hospital_id'   => 'nullable|exists:hospitals,id',
-            'role_id'       => 'required|exists:roles,id',
-            'user_name'     => 'required|string|max:255',
-            'email'       => [
+            'hospital_id' => 'nullable|exists:hospitals,id',
+            'role_id' => 'required|exists:roles,id',
+            'user_name' => 'required|string|max:255',
+            'email' => [
                 'required',
                 'email',
                 Rule::unique('users', 'email')->ignore($userId),
             ],
-            'password'      => $userId ? 'nullable|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/' : 'required|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/',
-            'is_active'     => 'boolean',
+            'password' => $userId ? 'nullable|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/' : 'required|min:6|regex:/[0-9]/|regex:/[a-zA-Z]/',
+            'is_active' => 'boolean',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
     }
 }

@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
-class AppointmentRequest extends FormRequest
+class AppointmentRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,6 +13,18 @@ class AppointmentRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => $this->userId,
+            'hospital_id' => $this->hospitalId,
+            'donation_id' => $this->donationId,
+            'blood_request_id' => $this->bloodRequestId,
+            'appointment_date' => $this->appointmentDate,
+            'appointment_time' => $this->appointmentTime,
+        ]);
     }
 
     /**
@@ -25,8 +35,7 @@ class AppointmentRequest extends FormRequest
     public function rules(): array
     {
         //for toggle status
-        if($this->isMethod('patch')) 
-        {
+        if ($this->isMethod('patch')) {
             return [
                 'status' => [
                     'required',
@@ -45,28 +54,5 @@ class AppointmentRequest extends FormRequest
             'status' => 'required|in:scheduled, cancelled, confirmed, completed',
             'remarks' => 'nullable|string|max:255',
         ];
-    }
-
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'user_id' => $this->userId,
-            'hospital_id' => $this->hospitalId,
-            'donation_id' => $this->donationId,
-            'blood_request_id' => $this->bloodRequestId,
-            'appointment_date' => $this->appointmentDate,
-            'appointment_time' => $this->appointmentTime,
-        ]);
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'success' => false,
-                'message' => 'Validation Error',
-                'errors' => $validator->errors(),
-            ], 422)
-        );
     }
 }

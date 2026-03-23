@@ -272,7 +272,7 @@ class AnnouncementController extends Controller
      * @OA\Response(response=404, description="Announcement not found")
      * )
      */
-    public function destroy($id)
+    public function destory($id)
     {
         $announcement = Announcement::find($id);
 

@@ -9,6 +9,7 @@ enum DonationStatus: string
     case APPROVED = 'approved';
     case REJECTED = 'rejected';
     case COMPLETED = 'completed';
+    case CANCELLED = 'canceled';
 
     public static function values(): array
     {

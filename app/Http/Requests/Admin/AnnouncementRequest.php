@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseFormRequest;
 
-class AnnouncementRequest extends FormRequest
+class AnnouncementRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,19 +28,6 @@ class AnnouncementRequest extends FormRequest
         ]);
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'is_active'          => $this->isActive,
-            'expired_at'         => $this->expiredAt,
-        ]);
-    }
-
     public function rules(): array
     {
         return [
@@ -51,14 +36,5 @@ class AnnouncementRequest extends FormRequest
             'is_active' => ['boolean'],
             'expired_at' => ['nullable', 'date', 'after_or_equal:today'],
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
     }
 }

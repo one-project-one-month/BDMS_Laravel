@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\User;
 
 use App\Enums\BloodGroup;
-use App\Enums\DonationStatus;
 use App\Http\Requests\BaseFormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class DonationRequest extends BaseFormRequest
 {
@@ -14,21 +13,28 @@ class DonationRequest extends BaseFormRequest
      */
     public function authorize(): bool
     {
+        $user = auth()->user();
+        $donor = $user->donor;
+
+        if (!$donor)
+            return false;
+
+        if ($donor->last_donation_date) {
+            return now()->diffInDays($donor->last_donation_date) >= 90;
+        }
+
         return true;
     }
 
-    protected function prepareForValidation(): void
+    protected function prepareForValidation()
     {
         $this->merge([
-            'donor_id' => $this->donorId,
+            'donor_id' => auth()->user()->donor?->id,
             'hospital_id' => $this->hospitalId,
             'blood_request_id' => $this->bloodRequestId,
-            'created_by' => $this->createdBy,
             'blood_group' => $this->bloodGroup,
             'units_donated' => $this->unitsDonated,
             'donation_date' => $this->donationDate,
-            'approved_by' => $this->approvedBy,
-            'approved_at' => $this->approvedAt,
         ]);
     }
 
@@ -39,18 +45,13 @@ class DonationRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-
         return [
             'donor_id' => 'required|exists:donors,id',
             'hospital_id' => 'required|exists:hospitals,id',
             'blood_request_id' => 'nullable|exists:blood_requests,id',
-            'created_by' => 'required|exists:users,id',
-            'blood_group' => ['required', 'string', Rule::in(BloodGroup::values())],
+            'blood_group' => ['required', new Enum(BloodGroup::class)],
             'units_donated' => 'required|integer|min:1',
-            'donation_date' => 'required|date',
-            'status' => ['required', 'string', Rule::in(DonationStatus::values())],
-            'approved_by' => 'nullable|exists:users,id',
-            'approved_at' => 'nullable|date',
+            'donation_date' => 'required|date|before_or_equal:today',
             'remarks' => 'nullable|string',
         ];
     }

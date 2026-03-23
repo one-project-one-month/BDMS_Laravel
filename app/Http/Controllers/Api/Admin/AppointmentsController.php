@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\AppointmentStatus;
+use App\Enums\BloodRequestStatus;
+use App\Enums\DonationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\Admin\AppointmentRequest;
 use App\Http\Resources\Api\Admin\AppointmentResource;
 use App\Models\Appointment;
-use Illuminate\Support\Facades\App;
-use Pest\Support\Str;
+use App\Models\BloodRequest;
+use App\Models\Donation;
 
 /**
  * @OA\Tag(
@@ -62,7 +64,7 @@ class AppointmentsController extends Controller
 
     /**
      * @OA\Post(
-     * path="/api/v1/appointments",
+     * path="/api/v1/appointments/blood-request",
      * summary="Create a new appointment",
      * description="Creates a new appointment for a blood donation.",
      * tags={"Appointments"},
@@ -91,14 +93,78 @@ class AppointmentsController extends Controller
      * @OA\Response(response=422, description="Validation error")
      * )
      */
-    public function store(AppointmentRequest $request)
+    public function storeBloodRequestAppointment(AppointmentRequest $request)
     {
-        try {
-            $appointment = Appointment::create($request->validated());
-            return $this->successResponse("Appointment Created Successfully!", new AppointmentResource($appointment), 201);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+        $bloodRequest = BloodRequest::findOrFail($request->blood_request_id);
+
+        if ($bloodRequest->status !== BloodRequestStatus::APPROVED->value) {
+            return $this->errorResponse("Blood Request is not approved.", 422);
         }
+
+        $appointment = Appointment::create([
+            'blood_request_id' => $bloodRequest->id,
+            'user_id' => auth()->id(),
+            'hospital_id' => $request->hospital_id,
+            'appointment_date' => $request->appointment_date,
+            'appointment_time' => $request->appointment_time,
+            'status' => AppointmentStatus::SCHEDULED->value,
+            'remarks' => $request->remarks,
+        ]);
+
+        return $this->successResponse("Patient Appointment Created Successfully!", new AppointmentResource($appointment));
+    }
+
+    /**
+     * @OA\Post(
+     * path="/api/v1/appointments/donation",
+     * summary="Create a new appointment",
+     * description="Creates a new appointment for a blood donation.",
+     * tags={"Appointments"},
+     * security={{"bearerAuth":{}}},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * @OA\Property(property="hospitalId", type="integer", example=1),
+     * @OA\Property(property="donationId", type="integer", example=2),
+     * @OA\Property(property="appointmentDate", type="string", format="date", example="2026-03-10"),
+     * @OA\Property(property="appointmentTime", type="string", example="02:30 PM"),
+     * @OA\Property(property="remark", type="string", example="First appointment for this request.")
+     * )
+     * ),
+     * @OA\Response(
+     * response=201,
+     * description="Appointment created successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="message", type="string", example="Appointment created successfully"),
+     * @OA\Property(property="data", ref="#/components/schemas/AppointmentResource")
+     * )
+     * ),
+     * @OA\Response(response=400, description="Bad Request"),
+     * @OA\Response(response=401, description="Unauthenticated"),
+     * @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function storeDonationAppointment(AppointmentRequest $request)
+    {
+        $donationRequest = Donation::findOrFail($request->donation_id);
+
+        if ($donationRequest->status !== DonationStatus::APPROVED->value) {
+            return $this->errorResponse("Donation Request is not approved.", 422);
+        }
+
+        $appointment = Appointment::create([
+            'donation_request_id' => $donationRequest->id,
+            'user_id' => auth()->id(),
+            'hospital_id' => $request->hospital_id,
+            'appointment_date' => $request->appointment_date,
+            'appointment_time' => $request->appointment_time,
+            'status' => AppointmentStatus::SCHEDULED->value,
+            'remarks' => $request->remarks,
+
+        ]);
+
+        return $this->successResponse("Donor Appointment Created Successfully!", new AppointmentResource($appointment));
     }
 
     /**
@@ -234,23 +300,23 @@ class AppointmentsController extends Controller
      *     @OA\Response(response=422, description="Validation error"),
      *     @OA\Response(response=500, description="Server error")
      * )
-    */ 
-    public function toggleStatus(AppointmentRequest $request, String $id)
-        {
-            try {
-                
-                $appointment = Appointment::findOrFail($id);
-                
-                $appointment->update([
-                    'status' => $request->status,
-                ]);
+     */
+    public function toggleStatus(AppointmentRequest $request, string $id)
+    {
+        try {
 
-                return $this->successResponse("Appointment Status Updated Successfully", new AppointmentResource($appointment));
+            $appointment = Appointment::findOrFail($id);
 
-            } catch (\Exception $e) {
-                return $this->errorResponse($e->getMessage(), 500);
-            }
+            $appointment->update([
+                'status' => $request->status,
+            ]);
+
+            return $this->successResponse("Appointment Status Updated Successfully", new AppointmentResource($appointment));
+
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
         }
+    }
 
     /**
      * @OA\Delete(
@@ -281,7 +347,7 @@ class AppointmentsController extends Controller
      *     @OA\Response(response=401, description="Unauthenticated"),
      *     @OA\Response(response=404, description="Appointment not found")
      * )
-    */
+     */
     public function destroy(Appointment $appointment)
     {
         try {
