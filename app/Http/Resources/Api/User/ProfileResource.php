@@ -15,7 +15,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Property(property="userName", type="string", example="John Doe"),
  * @OA\Property(property="email", type="string", example="johndoe@example.com"),
  * @OA\Property(property="isActive", type="boolean", example="true"),
- * @OA\Property(property="createdAt", type="boolean", example="true")
+ * @OA\Property(property="createdAt", type="boolean", example="true"),
+ * @OA\Property(
+ * property="donorInfo",
+ * ref="#/components/schemas/ProfileDonorResource"
+ * ),
  * )
  */
 class ProfileResource extends JsonResource
@@ -35,6 +39,7 @@ class ProfileResource extends JsonResource
             'email' => $this->email,
             'isActive' => $this->is_active,
             'createdAt' => $this->created_at,
+            'donorInfo' => new ProfileDonorResource($this->whenLoaded('donor')),
         ];
     }
 }
