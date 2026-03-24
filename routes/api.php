@@ -123,12 +123,12 @@ Route::prefix('v1/')->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
 
         // User Profile Routes
-        Route::get('/users/{userId}', [ProfileController::class, 'show']);
-        Route::put('/users/{userId}', [ProfileController::class, 'update']);
+        Route::get('/user/{userId}', [ProfileController::class, 'show']);
+        Route::put('/user/{userId}', [ProfileController::class, 'update']);
 
         // User Donor Routes
-        Route::get('users/{userId}/doners', [ProfileDonorController::class, 'index']);
-        Route::post('users/{userId}/doners', [ProfileDonorController::class, 'store']);
+        Route::get('user/{userId}/doners', [ProfileDonorController::class, 'index']);
+        Route::post('user/{userId}/doners', [ProfileDonorController::class, 'store']);
 
         // User Certificate Routes
         Route::get('/{userId}/certificates', [UserCertificateController::class, 'index']);
@@ -140,7 +140,10 @@ Route::prefix('v1/')->group(function () {
         Route::patch("/{userId}/appointments/{id}", [UserAppointmentController::class, "update"]);
 
         // User Blood Request Routes
-        Route::apiResource('/{userId}/blood-requests', UserBloodRequestController::class)->only('index', 'store');
+        Route::prefix('{userId}/blood-requests')->group(function () {
+            Route::get('/', [UserBloodRequestController::class, 'index']);
+            Route::post('/', [UserBloodRequestController::class, 'store']);
+        });
         Route::patch('blood-requests/{id}/cancel', [UserBloodRequestController::class, 'cancel']);
 
         // Donation Routes
