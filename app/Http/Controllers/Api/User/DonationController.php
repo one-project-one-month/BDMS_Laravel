@@ -49,12 +49,19 @@ class DonationController extends Controller
             return $this->errorResponse("Unauthorized access.", 403);
         }
 
+        if (!$user->donor) {
+            return $this->successResponse("No donation history found.", []);
+        }
+
         $donations = Donation::with('hospital')
-            ->where('donor_id', $user->donor?->id)
+            ->where('donor_id', $user->donor->id)
             ->latest()
             ->get();
 
-        return $this->successResponse("Success", DonationResource::collection($donations));
+        return $this->successResponse(
+            "Donation history retrieved successfully",
+            DonationResource::collection($donations)
+        );
     }
 
     /**
@@ -79,11 +86,20 @@ class DonationController extends Controller
      */
     public function show(User $user, Donation $donation)
     {
-        if ($donation->donor_id !== $user->donor?->id) {
+        if (auth()->id() !== $user->id) {
+            return $this->errorResponse("Unauthorized access.", 403);
+        }
+
+        if (!$user->donor || $donation->donor_id !== $user->donor->id) {
             return $this->errorResponse("Donation record not found for this user.", 404);
         }
 
-        return $this->successResponse("Success", new DonationResource($donation));
+        $donation->load(['hospital', 'approvedBy']);
+
+        return $this->successResponse(
+            "Donation record retrieved successfully",
+            new DonationResource($donation)
+        );
     }
 
     /**
@@ -115,12 +131,29 @@ class DonationController extends Controller
      */
     public function store(DonationRequest $request, User $user)
     {
-        $data = $request->validated();
-        $data['created_by'] = auth()->id();
+        try {
+            if (!$user->donor) {
+                return $this->errorResponse("This user does not have a donor profile. Please create one first.", 422);
+            }
 
-        $donation = Donation::create($data);
+            $data = $request->validated();
 
-        return $this->successResponse("Donation created.", new DonationResource($donation), 201);
+            $data['donor_id'] = $user->donor->id;
+            $data['created_by'] = auth()->id();
+
+            $data['blood_group'] = $user->donor->blood_group;
+
+            $donation = Donation::create($data);
+            $user->donor->update(['last_donation_date' => $donation->donation_date]);
+
+            return $this->successResponse(
+                "Donation record created successfully.",
+                new DonationResource($donation->load(['donor', 'hospital'])),
+                201
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse("Failed to create donation: " . $e->getMessage(), 500);
+        }
     }
 
     /**
@@ -145,16 +178,34 @@ class DonationController extends Controller
      */
     public function cancel(User $user, Donation $donation)
     {
-        if ($donation->donor_id !== $user->donor?->id) {
-            return $this->errorResponse("Unauthorized.", 403);
+        try {
+            if (auth()->id() !== $user->id) {
+                return $this->errorResponse("Unauthorized access.", 403);
+            }
+
+            if (!$user->donor || $donation->donor_id !== $user->donor->id) {
+                return $this->errorResponse("Donation record not found for this user.", 404);
+            }
+
+            if ($donation->status !== DonationStatus::PENDING->value) {
+                return $this->errorResponse(
+                    "Cannot cancel donation. Current status: " . $donation->status,
+                    400
+                );
+            }
+
+            $donation->update([
+                'status' => DonationStatus::CANCELLED->value,
+                'remarks' => $donation->remarks . " (Cancelled by user on " . now()->toDateTimeString() . ")"
+            ]);
+
+            return $this->successResponse(
+                "Donation record has been cancelled.",
+                new DonationResource($donation)
+            );
+
+        } catch (\Exception $e) {
+            return $this->errorResponse("Failed to cancel donation: " . $e->getMessage(), 500);
         }
-
-        if ($donation->status !== DonationStatus::PENDING->value) {
-            return $this->errorResponse("Cannot cancel a non-pending donation.", 400);
-        }
-
-        $donation->update(['status' => DonationStatus::CANCELLED->value]);
-
-        return $this->successResponse("Donation cancelled.", new DonationResource($donation));
     }
 }
