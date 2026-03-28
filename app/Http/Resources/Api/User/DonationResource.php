@@ -35,11 +35,11 @@ class DonationResource extends JsonResource
             'hospitalName' => $this->hospital->name,
             'bloodGroup' => $this->blood_group,
             'unitsDonated' => $this->units_donated,
-            'donationDate' => $this->donation_date->format('d-m-Y'),
+            'donationDate' => $this->donation_date?->format('d-m-Y'),
             'status' => $this->status,
-            'approvedAt' => $this->approved_at->format('d-m-Y'),
+            'approvedAt' => $this->approved_at?->format('d-m-Y'),
             'remarks' => $this->remarks,
-            'createdAt' => $this->created_at->format('d-m-Y H:i:s'),
+            'createdAt' => $this->created_at?->format('d-m-Y H:i:s'),
         ];
     }
 }

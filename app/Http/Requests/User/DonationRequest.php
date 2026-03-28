@@ -11,16 +11,6 @@ class DonationRequest extends BaseFormRequest
      */
     public function authorize(): bool
     {
-        $user = auth()->user();
-        $donor = $user->donor;
-
-        if (!$donor)
-            return false;
-
-        if ($donor->last_donation_date) {
-            return now()->diffInDays($donor->last_donation_date) >= 90;
-        }
-
         return true;
     }
 
