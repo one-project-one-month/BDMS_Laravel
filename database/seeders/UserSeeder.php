@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\BloodGroup;
+use App\Enums\Gender;
 use App\Models\Hospital;
 use App\Models\Role;
 use App\Models\User;
@@ -48,17 +50,31 @@ class UserSeeder extends Seeder
         }
 
         # User
-        for ($i = 0; $i < 10; $i++) {
-            User::firstOrCreate(
-                ['email' => fake()->unique()->safeEmail()],
+        for ($i = 1; $i <= 5; $i++) {
+            $user = User::firstOrCreate(
+                ['email' => "user{$i}@bdms.com"],
                 [
                     'role_id' => $userRole->id,
                     'hospital_id' => $hospitals->random()->id,
-                    'user_name' => fake()->name(),
-                    'password' => 'password123',
+                    'user_name' => "Donor User {$i}",
+                    'password' => bcrypt('password123'),
                     'is_active' => true,
                 ]
             );
+
+            if ($user->wasRecentlyCreated) {
+                $user->donor()->create([
+                    'nrc_no' => "12/YAKANA(N)" . str_pad($i, 6, '0', STR_PAD_LEFT),
+                    'date_of_birth' => '1995-01-01',
+                    'gender' => Gender::values()[0],
+                    'blood_group' => BloodGroup::values()[0],
+                    'weight' => 60.50,
+                    'emergency_contact' => 'Family Member',
+                    'emergency_phone' => '0912345678',
+                    'address' => 'Yangon, Myanmar',
+                    'is_active' => true,
+                ]);
+            }
         }
     }
 }
