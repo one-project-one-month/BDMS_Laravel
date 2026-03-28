@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
 use App\Models\BloodRequest;
 use App\Models\Donation;
 use App\Models\Hospital;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class AppointmentSeeder extends Seeder
 {
@@ -18,20 +17,35 @@ class AppointmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::inRandomOrder()->first();
-        $hospital = Hospital::inRandomOrder()->first();
+        $users = User::whereHas('role', function ($q) {
+            $q->where('name', 'user');
+        })->get();
 
-        for($i = 0; $i < 10; $i++){
+        $hospital = Hospital::first();
+
+        if ($users->isEmpty() || !$hospital) {
+            return;
+        }
+
+        foreach ($users as $index => $user) {
+            if (!$user->donor)
+                continue;
+
+            $isDonation = rand(0, 1) == 1;
+
             Appointment::create([
                 'user_id' => $user->id,
                 'hospital_id' => $hospital->id,
-                'donation_id' => Donation::inRandomOrder()->first() ->id ?? null,
-                'blood_request_id' => BloodRequest::inRandomOrder()->first()->id ?? null,
+                'donation_id' => $isDonation ? (Donation::inRandomOrder()->first()?->id) : null,
+                'blood_request_id' => !$isDonation ? (BloodRequest::inRandomOrder()->first()?->id) : null,
                 'appointment_date' => now()->addDays(rand(1, 30))->toDateString(),
-                'appointment_time' => now()->addMinutes(rand(1, 1440))->toTimeString(), 
-                'status' => \App\Enums\AppointmentStatus::SCHEDULED->value,
-                'remarks' => Str::random(20),
+                'appointment_time' => sprintf('%02d:00:00', rand(9, 16)),
+                'status' => AppointmentStatus::SCHEDULED->value,
+                'remarks' => $isDonation ? "Scheduled for blood donation." : "Scheduled for blood request pickup.",
             ]);
+
+            if ($index >= 9)
+                break;
         }
     }
 }
