@@ -147,12 +147,18 @@ class DonationController extends Controller
             }
 
             $lastDonation = $userId->donor->last_donation_date;
-            if ($lastDonation && $lastDonation->diffInDays(now()) < 90) {
-                $eligibleDate = $lastDonation->addDays(90)->format('d-m-Y');
-                return $this->errorResponse(
-                    "You are not eligible to donate blood yet. The earliest date you can donate is {$eligibleDate}.",
-                    422
-                );
+
+            if ($lastDonation) {
+                $daysSinceLastDonation = $lastDonation->diffInDays(now());
+
+                if ($daysSinceLastDonation < 90) {
+                    $eligibleDate = $lastDonation->copy()->addDays(90)->format('d-m-Y');
+
+                    return $this->errorResponse(
+                        "You are not eligible to donate blood yet. The earliest date you can donate is {$eligibleDate}.",
+                        422
+                    );
+                }
             }
 
             $data = $request->validated();
