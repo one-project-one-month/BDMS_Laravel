@@ -42,7 +42,5 @@ class HospitalSeeder extends Seeder
         foreach ($mainHospitals as $hospital) {
             Hospital::create($hospital);
         }
-
-        Hospital::factory(7)->create();
     }
 }
