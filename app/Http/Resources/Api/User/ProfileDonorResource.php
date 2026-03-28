@@ -38,17 +38,17 @@ class ProfileDonorResource extends JsonResource
             // Data from the 'donors' table
             'donorId' => $this->id,
             'nrcNo' => $this->nrc_no,
-            'dateOfBirth' => $this->date_of_birth->format('d-m-Y'),
+            'dateOfBirth' => $this->date_of_birth?->format('d-m-Y'),
             'gender' => $this->gender,
             'bloodGroup' => $this->blood_group,
             'weight' => $this->weight,
-            'lastDonationDate' => $this->last_donation_date->format('d-m-Y'),
+            'lastDonationDate' => $this->last_donation_date?->format('d-m-Y'),
             'remarks' => $this->remarks,
             'emergencyContact' => $this->emergency_contact,
             'emergencyPhone' => $this->emergency_phone,
             'address' => $this->address,
             'isActive' => $this->is_active,
-            'created_at' => $this->created_at->format('Y-m-d'),
+            'created_at' => $this->created_at?->format('Y-m-d'),
         ];
     }
 }

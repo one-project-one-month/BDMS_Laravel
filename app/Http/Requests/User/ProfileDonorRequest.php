@@ -28,7 +28,7 @@ class ProfileDonorRequest extends BaseFormRequest
             'nrc_no' => $this->nrcNo,
             'date_of_birth' => $this->dateOfBirth,
             'blood_group' => $this->bloodGroup,
-            'last_donation_date' => $this->lastDonationDate,
+            'last_donation_date' => $this->lastDonationDate->format('Y-m-d'),
             'emergency_contact' => $this->emergencyContact,
             'emergency_phone' => $this->emergencyPhone,
             'is_active' => $this->isActive,
