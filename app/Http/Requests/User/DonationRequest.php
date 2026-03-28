@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\User;
 
-use App\Enums\BloodGroup;
 use App\Http\Requests\BaseFormRequest;
-use Illuminate\Validation\Rules\Enum;
 
 class DonationRequest extends BaseFormRequest
 {
@@ -29,10 +27,8 @@ class DonationRequest extends BaseFormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'donor_id' => auth()->user()->donor?->id,
             'hospital_id' => $this->hospitalId,
             'blood_request_id' => $this->bloodRequestId,
-            'blood_group' => $this->bloodGroup,
             'units_donated' => $this->unitsDonated,
             'donation_date' => $this->donationDate,
         ]);
@@ -46,10 +42,8 @@ class DonationRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'donor_id' => 'required|exists:donors,id',
             'hospital_id' => 'required|exists:hospitals,id',
             'blood_request_id' => 'nullable|exists:blood_requests,id',
-            'blood_group' => ['required', new Enum(BloodGroup::class)],
             'units_donated' => 'required|integer|min:1',
             'donation_date' => 'required|date|before_or_equal:today',
             'remarks' => 'nullable|string',

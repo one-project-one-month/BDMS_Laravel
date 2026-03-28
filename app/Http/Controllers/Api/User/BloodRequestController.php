@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Enums\BloodRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\User\BloodRequestRequest;
 use App\Http\Resources\Api\User\BloodRequestResource;
 use App\Models\BloodRequest;
 use Illuminate\Support\Facades\Auth;
+use Log;
 
 class BloodRequestController extends Controller
 {
@@ -35,9 +37,16 @@ class BloodRequestController extends Controller
     public function index()
     {
         try {
-            $bloodRequests = BloodRequest::with(["user", "hospital"])->paginate(config("pagnation.perPage"));
+            $bloodRequests = BloodRequest::where('user_id', auth()->id())
+                ->with(["user", "hospital"])
+                ->orderBy('created_at', 'desc')
+                ->paginate(config("pagnation.perPage"));
 
-            return $this->successResponse("Blood Requests retrieved successfully", $this->buildPaginatedResourceResponse(BloodRequestResource::class, $bloodRequests), 200);
+            return $this->successResponse(
+                "Your Blood Requests retrieved successfully",
+                $this->buildPaginatedResourceResponse(BloodRequestResource::class, $bloodRequests),
+                200
+            );
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
@@ -74,21 +83,20 @@ class BloodRequestController extends Controller
     public function store(BloodRequestRequest $request)
     {
         try {
-            $bloodRequest = BloodRequest::create([
-                "user_id" => Auth::id(),
-                "hospital_id" => $request->hospital_id,
-                "patient_name" => $request->patient_name,
-                "blood_group" => $request->blood_group,
-                "units_required" => $request->units_required,
-                "contact_phone" => $request->contact_phone,
-                "urgency" => $request->urgency,
-                "required_date" => $request->required_date,
-                "reason" => $request->reason
-            ]);
+            $data = $request->validated();
 
-            return $this->successResponse("Blood Request created successfully", new BloodRequestResource($bloodRequest), 201);
+            $data['user_id'] = auth()->id();
+
+            $bloodRequest = BloodRequest::create($data);
+
+            return $this->successResponse(
+                "Blood Request created successfully",
+                new BloodRequestResource($bloodRequest->load(['user', 'hospital'])),
+                201
+            );
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+            Log::error("Blood Request Creation Failed: " . $e->getMessage());
+            return $this->errorResponse("Something went wrong while creating the request.", 500);
         }
     }
 
@@ -119,17 +127,25 @@ class BloodRequestController extends Controller
         try {
             $bloodRequest = BloodRequest::findOrFail($id);
 
-            // Check if the authenticated user is the owner of the blood request
             if ($bloodRequest->user_id !== Auth::id()) {
-                return $this->errorResponse("Unauthorized", 403);
+                return $this->errorResponse("Unauthorized to cancel this request.", 403);
             }
 
-            $bloodRequest->status = "cancelled";
+            if ($bloodRequest->status !== BloodRequestStatus::PENDING->value) {
+                return $this->errorResponse("Cannot cancel a request that is already " . $bloodRequest->status, 422);
+            }
+
+
+            $bloodRequest->status = BloodRequestStatus::CANCELLED->value;
             $bloodRequest->save();
 
-            return $this->successResponse("Blood Request cancelled successfully", new BloodRequestResource($bloodRequest), 200);
+            return $this->successResponse(
+                "Blood Request cancelled successfully",
+                new BloodRequestResource($bloodRequest),
+                200
+            );
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+            return $this->errorResponse("Failed to cancel request: " . $e->getMessage(), 500);
         }
     }
 }
