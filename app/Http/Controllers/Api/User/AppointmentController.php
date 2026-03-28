@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Enums\AppointmentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Resources\Api\User\AppointmentResource;
@@ -45,11 +46,25 @@ class AppointmentController extends Controller
     public function index($userId)
     {
         try {
-            $appointments = Appointment::with(["users", "hospitals", "donation", "blood_requests"])->where("user_id", $userId)->paginate(config("pagnation.perPage"));
+            if ((int) auth()->id() !== (int) $userId) {
+                return $this->errorResponse("Unauthorized access to this data.", 403);
+            }
 
-            return $this->successResponse("Appointment retrieved successfully", $this->buildPaginatedResourceResponse(AppointmentResource::class, $appointments), 200);
+            $perPage = config("pagination.perPage");
+
+            $appointments = Appointment::with(["user", "hospital", "donation", "blood_request"])
+                ->where("user_id", $userId)
+                ->latest()
+                ->paginate($perPage);
+
+            return $this->successResponse(
+                "Appointments retrieved successfully",
+                $this->buildPaginatedResourceResponse(AppointmentResource::class, $appointments),
+                200
+            );
+
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+            return $this->errorResponse("Failed to fetch appointments: " . $e->getMessage(), 500);
         }
     }
 
@@ -90,16 +105,27 @@ class AppointmentController extends Controller
     public function show($userId, $id)
     {
         try {
-            $appointment = Appointment::with(["users", "hospitals", "donation", "blood_requests"])->where([
-                "user_id" => $userId,
-                "id" => $id
-            ])->get();
+            if ((int) auth()->id() !== (int) $userId) {
+                return $this->errorResponse("Unauthorized access.", 403);
+            }
+
+            $appointment = Appointment::with(["user", "hospital", "donation", "blood_request"])
+                ->where([
+                    "user_id" => $userId,
+                    "id" => $id
+                ])
+                ->first();
 
             if (!$appointment) {
                 return $this->errorResponse("Appointment not found", 404);
             }
 
-            return $this->successResponse("Appointment retrieved successfully", new AppointmentResource($appointment), 200);
+            return $this->successResponse(
+                "Appointment retrieved successfully",
+                new AppointmentResource($appointment),
+                200
+            );
+
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
@@ -145,7 +171,7 @@ class AppointmentController extends Controller
      * @OA\Response(response=500, description="Internal Server Error")
      * )
      */
-    public function update($userId, $id, Request $request)
+    public function update(Request $request, $userId, $id)
     {
         try {
             $appointment = Appointment::where('id', $id)
@@ -156,13 +182,25 @@ class AppointmentController extends Controller
                 return $this->errorResponse("Appointment not found", 404);
             }
 
+            if ((int) auth()->id() !== (int) $userId) {
+                return $this->errorResponse("Unauthorized action.", 403);
+            }
+
+            $appointment->update([
+                'status' => AppointmentStatus::CANCELLED,
+                'remarks' => $request->remarks ?? $appointment->remarks
+            ]);
+
             $appointment->load(['user', 'hospital', "donation", "blood_request"]);
 
-            $appointment->update($request->all());
+            return $this->successResponse(
+                "Appointment cancelled successfully",
+                new AppointmentResource($appointment),
+                200
+            );
 
-            return $this->successResponse("Appointment cancel successfully", new AppointmentResource($appointment), 200);
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+            return $this->errorResponse("Update failed: " . $e->getMessage(), 500);
         }
     }
 }

@@ -47,15 +47,15 @@ class ProfileDonorController extends Controller
     public function index(Request $request, $userId)
     {
         try {
-            $user = User::findOrFail($userId);
+            $user = User::with('donor.user')->findOrFail($userId);
 
-            $query = $user->donor()->with('user');
-
-            $donors = $query->paginate(config('pagination.perPage', 10));
+            if (!$user->donor) {
+                return $this->errorResponse("Donor profile not found for this user.", 404);
+            }
 
             return $this->successResponse(
                 'User donor profile retrieved successfully',
-                $this->buildPaginatedResourceResponse(ProfileDonorResource::class, $donors),
+                new ProfileDonorResource($user->donor),
                 200
             );
         } catch (\Exception $e) {
@@ -109,11 +109,15 @@ class ProfileDonorController extends Controller
         try {
             $user = User::findOrFail($userId);
 
+            if ((int) auth()->id() !== (int) $user->id) {
+                return $this->errorResponse('Unauthorized action.', 403);
+            }
+
             if ($user->donor()->exists()) {
                 return $this->errorResponse('Donor profile already exists for this user.', 422);
             }
 
-            $donor = $user->donor()->create($request->all());
+            $donor = $user->donor()->create($request->validated());
 
             return $this->successResponse(
                 'Donor profile created successfully',
@@ -121,7 +125,7 @@ class ProfileDonorController extends Controller
                 201
             );
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+            return $this->errorResponse("Error: " . $e->getMessage(), 500);
         }
     }
 }

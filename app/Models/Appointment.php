@@ -45,7 +45,7 @@ class Appointment extends Model
         return $this->belongsTo(Donation::class);
     }
 
-    public function bloodRequest()
+    public function blood_request()
     {
         return $this->belongsTo(BloodRequest::class);
     }
