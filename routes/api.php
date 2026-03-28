@@ -37,6 +37,8 @@ Route::prefix('v1/')->group(function () {
 
     // Common routes
     Route::apiResource('announcements', AnnouncementController::class)->only('index', 'show');
+    // Hospital Routes
+    Route::get('/hospitals', [HospitalController::class, 'index']);
 
     // Admin and Staff
     Route::middleware(['auth:sanctum', 'Role.check:1,2'])->group(function () {
@@ -62,9 +64,6 @@ Route::prefix('v1/')->group(function () {
 
         // Role Routes
         Route::get('/roles', [RoleController::class, 'index']);
-
-        // Hospital Routes
-        Route::get('/hospitals', [HospitalController::class, 'index']);
 
         // Donation Routes
         Route::apiResource('donations', DonationController::class);
