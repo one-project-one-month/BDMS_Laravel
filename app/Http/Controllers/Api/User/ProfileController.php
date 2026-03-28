@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
+use App\Http\Requests\User\ProfileRequest;
 use App\Http\Resources\Api\User\ProfileResource;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -42,14 +42,14 @@ class ProfileController extends Controller
      */
     public function show($userId)
     {
+        if ((int) auth()->id() !== (int) $userId) {
+            return $this->errorResponse('Unauthorized access to this profile.', 403);
+        }
+
         $user = User::find($userId);
 
         if (!$user) {
             return $this->errorResponse('User not found.', 404);
-        }
-
-        if (Auth::id() !== (int) $userId) {
-            return $this->errorResponse('Unauthorized access to this profile.', 403);
         }
 
         $user->load('donor');
@@ -60,7 +60,6 @@ class ProfileController extends Controller
             200
         );
     }
-
     /**
      * @OA\Put(
      * path="/api/v1/users/{userId}",
@@ -97,22 +96,31 @@ class ProfileController extends Controller
      * @OA\Response(response=500, description="Internal Server Error")
      * )
      */
-    public function update($userId)
+    public function update(ProfileRequest $request, $userId)
     {
-        $user = User::find($userId);
+        try {
+            $user = User::findOrFail($userId);
 
-        if (!$user) {
-            return $this->errorResponse('User not found.', 404);
+            if ((int) auth()->id() !== (int) $user->id) {
+                return $this->errorResponse('Unauthorized access.', 403);
+            }
+
+            $data = $request->validated();
+
+            if (isset($data['password'])) {
+                $data['password'] = bcrypt($data['password']);
+            }
+
+            $user->update($data);
+
+            return $this->successResponse(
+                'Account information updated successfully.',
+                new ProfileResource($user),
+                200
+            );
+
+        } catch (\Exception $e) {
+            return $this->errorResponse("Update failed: " . $e->getMessage(), 500);
         }
-
-        if (Auth::id() !== $user->id) {
-            return $this->errorResponse('Unauthorized access to this profile.', 403);
-        }
-
-        return $this->successResponse(
-            'Profile updated successfully',
-            new ProfileResource($user),
-            200
-        );
     }
 }
