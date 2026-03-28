@@ -35,7 +35,7 @@ class DonationRequest extends BaseFormRequest
             'hospital_id' => 'required|exists:hospitals,id',
             'blood_request_id' => 'nullable|exists:blood_requests,id',
             'units_donated' => 'required|integer|min:1',
-            'donation_date' => 'required|date|before_or_equal:today',
+            'donation_date' => 'required|date|after_or_equal:today',
             'remarks' => 'nullable|string',
         ];
     }
