@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Enums\DonationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\User\DonationRequest;
@@ -148,13 +147,13 @@ class DonationController extends Controller
                 return $this->errorResponse("Donor profile not found.", 422);
             }
 
-            $hasCompleteRequest = Donation::where('donor_id', $donor->id)
-                ->where('status', 'completed')
+            $activeRequestExists = Donation::where('donor_id', $donor->id)
+                ->whereIn('status', ['pending', 'screening', 'approved'])
                 ->exists();
 
-            if (!$hasCompleteRequest) {
+            if ($activeRequestExists) {
                 return $this->errorResponse(
-                    "You already have a pending donation request. Please wait for admin approval.",
+                    "You already have an active donation request (Pending/Screening/Approved). Please wait for the current process to finish.",
                     422
                 );
             }
@@ -189,7 +188,6 @@ class DonationController extends Controller
             return $this->errorResponse("Failed: " . $e->getMessage(), 500);
         }
     }
-
     /**
      * @OA\Patch(
      * path="/api/v1/{userId}/donations/{id}/cancel",
