@@ -28,7 +28,7 @@ class ProfileDonorRequest extends BaseFormRequest
             'nrc_no' => $this->nrcNo,
             'date_of_birth' => $this->dateOfBirth,
             'blood_group' => $this->bloodGroup,
-            'last_donation_date' => $this->lastDonationDate->format('Y-m-d'),
+            'last_donation_date' => $this->lastDonationDate?->format('Y-m-d'),
             'emergency_contact' => $this->emergencyContact,
             'emergency_phone' => $this->emergencyPhone,
             'is_active' => $this->isActive,
@@ -38,17 +38,17 @@ class ProfileDonorRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'nrcNo' => 'required|string|max:50|unique:donors,nrc_no',
-            'dateOfBirth' => 'required|date|before:today',
+            'nrc_no' => 'required|string|max:50|unique:donors,nrc_no',
+            'date_of_birth' => 'required|date|before:today',
             'gender' => ['required', new Enum(Gender::class)],
-            'bloodGroup' => ['required', new Enum(BloodGroup::class)],
+            'blood_group' => ['required', new Enum(BloodGroup::class)],
             'weight' => 'required|numeric|between:30,999.99',
-            'lastDonationDate' => 'nullable|date|before_or_equal:today',
+            'last_donation_date' => 'nullable|date|before_or_equal:today',
             'remarks' => 'nullable|string|max:1000',
-            'emergencyContact' => 'required|string|max:255',
-            'emergencyPhone' => 'required|string|max:20',
+            'emergency_contact' => 'required|string|max:255',
+            'emergency_phone' => 'required|string|max:20',
             'address' => 'required|string',
-            'isActive' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 }
