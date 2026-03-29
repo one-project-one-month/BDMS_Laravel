@@ -128,8 +128,8 @@ Route::prefix('v1/')->group(function () {
         Route::put('/user/{userId}', [ProfileController::class, 'update']);
 
         // User Donor Routes
-        Route::get('user/{userId}/doners', [ProfileDonorController::class, 'index']);
-        Route::post('user/{userId}/doners', [ProfileDonorController::class, 'store']);
+        Route::get('user/{userId}/donors', [ProfileDonorController::class, 'index']);
+        Route::post('user/{userId}/donors', [ProfileDonorController::class, 'store']);
 
         // User Certificate Routes
         Route::get('/{userId}/certificates', [UserCertificateController::class, 'index']);
