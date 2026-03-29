@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\BloodInventoryStatus;
 use App\Enums\BloodRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\Admin\BloodRequest as BloodRequestRequest;
 use App\Http\Resources\Api\Admin\BloodRequestResource;
+use App\Models\BloodInventory;
 use App\Models\BloodRequest;
+use DB;
 use Illuminate\Support\Facades\Request;
 
 class BloodRequestController extends Controller
@@ -96,13 +99,44 @@ class BloodRequestController extends Controller
         $action = $request->action;
 
         try {
-            if (in_array($action, ['approve', 'reject']) && $bloodRequest->status !== BloodRequestStatus::PENDING->value) {
+            // Validation Checks
+            if (in_array($action, ['approve', 'reject']) && $bloodRequest->status->value !== BloodRequestStatus::PENDING->value) {
                 return $this->errorResponse("Action failed. Current status is " . $bloodRequest->status->value, 400);
             }
 
-            // Approved -> Fullfill
-            if ($action === 'fulfill' && $bloodRequest->status !== BloodRequestStatus::APPROVED->value) {
+            if ($action === 'fulfill' && $bloodRequest->status->value !== BloodRequestStatus::APPROVED->value) {
                 return $this->errorResponse("Only approved requests can be fulfilled.", 400);
+            }
+
+            if ($action === 'fulfill') {
+                return DB::transaction(function () use ($bloodRequest) {
+
+                    $inventoryUnits = BloodInventory::where('hospital_id', $bloodRequest->hospital_id)
+                        ->where('blood_group', $bloodRequest->blood_group)
+                        ->where('status', BloodInventoryStatus::AVAILABLE->value)
+                        ->where('expired_at', '>', now())
+                        ->orderBy('expired_at', 'asc')
+                        ->limit($bloodRequest->units_requested)
+                        ->get();
+
+                    if ($inventoryUnits->count() < $bloodRequest->units_requested) {
+                        return $this->errorResponse("Insufficient blood units in inventory. Available: " . $inventoryUnits->count(), 422);
+                    }
+
+                    foreach ($inventoryUnits as $unit) {
+                        $unit->update([
+                            'status' => BloodInventoryStatus::USED->value,
+                            'blood_request_id' => $bloodRequest->id
+                        ]);
+                    }
+
+                    $bloodRequest->update(['status' => BloodRequestStatus::FULFILLED->value]);
+
+                    return $this->successResponse(
+                        "Blood request fulfilled. Inventory updated.",
+                        new BloodRequestResource($bloodRequest->load(['hospital', 'user']))
+                    );
+                });
             }
 
             $updateData = match ($action) {
@@ -111,30 +145,15 @@ class BloodRequestController extends Controller
                     'approved_by' => auth()->id(),
                     'approved_at' => now(),
                 ],
-                'reject' => [
-                    'status' => BloodRequestStatus::REJECTED->value,
-                ],
-                'cancel' => [
-                    'status' => BloodRequestStatus::CANCELLED->value,
-                ],
-                'fulfill' => [
-                    'status' => BloodRequestStatus::FULFILLED->value,
-                ],
+                'reject' => ['status' => BloodRequestStatus::REJECTED->value],
+                'cancel' => ['status' => BloodRequestStatus::CANCELLED->value],
             };
 
             $bloodRequest->update($updateData);
 
-            $messages = [
-                'approve' => 'Blood request has been approved.',
-                'reject' => 'Blood request has been rejected.',
-                'cancel' => 'Blood request has been cancelled.',
-                'fulfill' => 'Blood request has been marked as fulfilled.',
-            ];
-
             return $this->successResponse(
-                $messages[$action],
-                new BloodRequestResource($bloodRequest->load(['hospital', 'user'])),
-                200
+                "Blood request " . $action . "ed successfully.",
+                new BloodRequestResource($bloodRequest->load(['hospital', 'user']))
             );
 
         } catch (\Exception $e) {

@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\User\CertificateController as UserCertificateContro
 use App\Http\Controllers\Api\User\AppointmentController as UserAppointmentController;
 use App\Http\Controllers\Api\User\BloodRequestController as UserBloodRequestController;
 use App\Http\Controllers\Api\User\DonationController as UserDonationController;
+use App\Http\Controllers\Api\User\DashboardController as UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -119,6 +120,7 @@ Route::prefix('v1/')->group(function () {
     Route::middleware(['auth:sanctum', 'Role.check:3'])->group(function () {
 
         // Home Routes
+        Route::get('/user-dashboard', [UserDashboardController::class, 'index']);
         Route::get('/home', [HomeController::class, 'index']);
 
         // User Profile Routes
@@ -152,3 +154,4 @@ Route::prefix('v1/')->group(function () {
         Route::patch('/{userId}/donations/{id}/cancel', [UserDonationController::class, 'cancel']);
     });
 });
+
