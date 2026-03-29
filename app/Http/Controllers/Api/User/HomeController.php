@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Enums\AppointmentStatus;
-use App\Enums\BloodGroup;
-use App\Enums\BloodInventoryStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
-use App\Models\Appointment;
 use App\Models\BloodInventory;
 use App\Models\BloodRequest;
 use App\Models\Donation;
 use App\Models\Donor;
-use App\Models\User;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
+use DB;
 
 /**
  * @OA\Schema(
@@ -91,25 +85,29 @@ class HomeController extends Controller
             $bloodDonations = Donation::count();
 
             //BloodAvailability from Inventory
-            $bloodAvailability = BloodInventory::availableUnitsByHospital()
-                ->with('hospital:id,name')
+            $bloodAvailability = BloodInventory::select(
+                'blood_group',
+                DB::raw('SUM(units) as total_units')
+            )
+                ->where('status', 'available')
+                ->where('expired_at', '>', now())
+                ->groupBy('blood_group')
                 ->get()
-                ->map(function ($item) {
+                ->map(function ($inventory) {
                     return [
-                        'hospitalId' => $item->hospital_id,
-                        'hospitalName' => $item->hospital->name,
-                        'inventory' => $item->total_units,
+                        'bloodGroup' => $inventory->blood_group,
+                        'units' => (int) $inventory->total_units,
                     ];
-                }); 
-            
-                return $this->successResponse("Home data fetched successfully", [
-                    'livesSaved' => $livesSaved,
-                    'registeredDonors' => $registeredDonors,
-                    'activeRequests' => $activeRequests,
-                    'bloodDonations' => $bloodDonations,
-                    'bloodAvailability' => $bloodAvailability,
-                ]);
-            
+                });
+
+            return $this->successResponse("Home data fetched successfully", [
+                'livesSaved' => $livesSaved,
+                'registeredDonors' => $registeredDonors,
+                'activeRequests' => $activeRequests,
+                'bloodDonations' => $bloodDonations,
+                'bloodAvailability' => $bloodAvailability,
+            ]);
+
 
         } catch (\Exception $e) {
             return $this->errorResponse("Failed to fetch index" . $e->getMessage(), 500);
