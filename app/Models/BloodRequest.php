@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Auth;
 use App\Enums\BloodGroup;
 use App\Enums\Urgency;
 use App\Enums\BloodRequestStatus;
@@ -27,20 +26,21 @@ class BloodRequest extends Model
         'urgency',
         'required_date',
         'status',
+        'relationship_patient',
         'reason',
         'approved_by',
         'approved_at',
     ];
 
     protected $casts = [
-        'blood_group'  => BloodGroup::class,
-        'urgency'      => Urgency::class,
-        'status'       => BloodRequestStatus::class,
-        'required_date'=> 'date',
-        'approved_at'  => 'datetime',
-        'created_at'   => 'datetime',
-        'updated_at'   => 'datetime',
-        'deleted_at'   => 'datetime',
+        'blood_group' => BloodGroup::class,
+        'urgency' => Urgency::class,
+        'status' => BloodRequestStatus::class,
+        'required_date' => 'date',
+        'approved_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     protected $attributes = [
@@ -97,58 +97,58 @@ class BloodRequest extends Model
     // Approve Method
     public function approve(int $adminId): void
     {
-    if (!$this->canBeApproved()) {
-        throw new \Exception('Only pending requests can be approved.');
-    }
+        if (!$this->canBeApproved()) {
+            throw new \Exception('Only pending requests can be approved.');
+        }
 
-    $this->update([
-        'status' => BloodRequestStatus::APPROVED,
-        'approved_by' => $adminId,
-        'approved_at' => now(),
-    ]);
+        $this->update([
+            'status' => BloodRequestStatus::APPROVED,
+            'approved_by' => $adminId,
+            'approved_at' => now(),
+        ]);
     }
 
     // Reject Method
     public function reject(): void
     {
-    if (!$this->canBeRejected()) {
-        throw new \Exception('Only pending requests can be rejected.');
-    }
+        if (!$this->canBeRejected()) {
+            throw new \Exception('Only pending requests can be rejected.');
+        }
 
-    $this->update([
-        'status' => BloodRequestStatus::REJECTED,
-    ]);
+        $this->update([
+            'status' => BloodRequestStatus::REJECTED,
+        ]);
     }
 
     // Cancel Method
     public function cancel(): void
     {
-    if (!$this->canBeCancelled()) {
-        throw new \Exception('Only pending requests can be cancelled.');
+        if (!$this->canBeCancelled()) {
+            throw new \Exception('Only pending requests can be cancelled.');
+        }
+
+        $this->update([
+            'status' => BloodRequestStatus::CANCELLED,
+        ]);
     }
 
-    $this->update([
-        'status' => BloodRequestStatus::CANCELLED,
-    ]);
-    }
-    
     // Fulfill Method (After Donation Completed)
     public function fulfill(): void
     {
-     if (!$this->canBeFulfilled()) {
-        throw new \Exception('Only approved requests can be fulfilled.');
-    }
+        if (!$this->canBeFulfilled()) {
+            throw new \Exception('Only approved requests can be fulfilled.');
+        }
 
-    $this->update([
-        'status' => BloodRequestStatus::FULFILLED,
-    ]);
+        $this->update([
+            'status' => BloodRequestStatus::FULFILLED,
+        ]);
     }
 
     protected static function booted()
     {
-    static::creating(function ($model) {
-        $model->blood_request_code = 'BR-' . strtoupper(uniqid());
-    });
+        static::creating(function ($model) {
+            $model->blood_request_code = 'BR-' . strtoupper(uniqid());
+        });
     }
-    
+
 }

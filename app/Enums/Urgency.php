@@ -4,10 +4,8 @@ namespace App\Enums;
 
 enum Urgency: string
 {
-    case LOW = 'low';
-    case MEDIUM = 'medium';
-    case HIGH = 'high';
-    case CRITICAL = 'critical';
+    case EMERGENCY = 'emergency';
+    case PRE_BOOKED = 'pre_booked';
 
     public static function values(): array
     {

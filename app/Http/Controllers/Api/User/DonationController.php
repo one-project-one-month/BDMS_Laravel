@@ -9,6 +9,7 @@ use App\Http\Requests\User\DonationRequest;
 use App\Http\Resources\Api\User\DonationResource;
 use App\Models\Donation;
 use App\Models\User;
+use Carbon\Carbon;
 
 class DonationController extends Controller
 {
@@ -139,33 +140,47 @@ class DonationController extends Controller
     {
         try {
             if ((int) auth()->id() !== (int) $userId->id) {
-                return $this->errorResponse("Unauthorized access. Token ID and User ID mismatch.", 403);
+                return $this->errorResponse("Unauthorized access.", 403);
             }
 
-            if (!$userId->donor) {
-                return $this->errorResponse("Donor profile not found for this user.", 422);
+            $donor = $userId->donor;
+            if (!$donor) {
+                return $this->errorResponse("Donor profile not found.", 422);
             }
 
-            $lastDonation = $userId->donor->last_donation_date;
-            if ($lastDonation && $lastDonation->diffInDays(now()) < 90) {
-                $eligibleDate = $lastDonation->addDays(90)->format('d-m-Y');
+            $hasCompleteRequest = Donation::where('donor_id', $donor->id)
+                ->where('status', 'completed')
+                ->exists();
+
+            if (!$hasCompleteRequest) {
                 return $this->errorResponse(
-                    "You are not eligible to donate blood yet. The earliest date you can donate is {$eligibleDate}.",
+                    "You already have a pending donation request. Please wait for admin approval.",
                     422
                 );
             }
 
+            if ($donor->last_donation_date) {
+                $lastDonationDate = Carbon::parse($donor->last_donation_date)->startOfDay();
+                $eligibleDate = $lastDonationDate->copy()->addDays(90);
+
+                if (now()->startOfDay()->lt($eligibleDate)) {
+                    return $this->errorResponse(
+                        "You are not eligible yet. Next eligible date: " . $eligibleDate->format('d-m-Y'),
+                        422
+                    );
+                }
+            }
+
             $data = $request->validated();
-            $data['donor_id'] = $userId->donor->id;
+            $data['donor_id'] = $donor->id;
             $data['created_by'] = auth()->id();
-            $data['blood_group'] = $userId->donor->blood_group;
+            $data['blood_group'] = $donor->blood_group;
             $data['status'] = 'pending';
 
             $donation = Donation::create($data);
-            $userId->donor->update(['last_donation_date' => $donation->donation_date]);
 
             return $this->successResponse(
-                "Donation record created successfully.",
+                "Donation request submitted successfully. Waiting for admin approval.",
                 new DonationResource($donation->load(['hospital'])),
                 201
             );
@@ -174,6 +189,7 @@ class DonationController extends Controller
             return $this->errorResponse("Failed: " . $e->getMessage(), 500);
         }
     }
+
     /**
      * @OA\Patch(
      * path="/api/v1/{userId}/donations/{id}/cancel",

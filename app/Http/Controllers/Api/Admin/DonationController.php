@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\BloodInventoryStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\Admin\DonationRequest;
 use App\Http\Resources\Api\Admin\DonationResource;
+use App\Models\BloodInventory;
 use App\Models\Donation;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 /**
@@ -170,16 +174,40 @@ class DonationController extends Controller
      * )
      * )
      */
-    public function update(DonationRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        try {
-            $donation = Donation::findOrFail($id);
-            $donation->update($request->validated());
+        $donation = Donation::with(['donor', 'hospital'])->findOrFail($id);
 
-            return $this->successResponse('Donation updated successfully', new DonationResource($donation->load(['donor', 'hospital', 'creator', 'approver'])));
-        } catch (\Exception $e) {
-            return $this->errorResponse('Update failed: ' . $e->getMessage(), 500);
+        if ($donation->status === 'completed') {
+            return $this->errorResponse("This donation has already been marked as completed.", 422);
         }
+
+        if ($request->status === 'completed') {
+            return DB::transaction(function () use ($donation) {
+
+                $donation->update(['status' => 'completed']);
+
+                $donation->donor->update([
+                    'last_donation_date' => $donation->donation_date,
+                ]);
+
+                BloodInventory::create([
+                    'donation_id' => $donation->id,
+                    'hospital_id' => $donation->hospital_id,
+                    'blood_group' => $donation->blood_group,
+                    'units' => $donation->units_donated ?? 1,
+                    'collected_at' => $donation->donation_date,
+                    'expired_at' => Carbon::parse($donation->donation_date)->addDays(42),
+                    'status' => BloodInventoryStatus::AVAILABLE->value,
+                ]);
+
+                return $this->successResponse("Donation completed and blood unit added to inventory!");
+            });
+        }
+
+        $donation->update(['status' => $request->status]);
+
+        return $this->successResponse("Donation status updated to {$request->status}.");
     }
 
     /**

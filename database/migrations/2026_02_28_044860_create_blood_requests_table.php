@@ -21,12 +21,13 @@ return new class extends Migration {
             $table->enum('blood_group', BloodGroup::values())->index();
             $table->unsignedSmallInteger('units_required');
             $table->string('contact_phone');
-            $table->enum('urgency', Urgency::values())->default(Urgency::LOW->value)->index();
+            $table->enum('urgency', Urgency::values())->default(Urgency::PRE_BOOKED->value)->index();
             $table->date('required_date');
             $table->enum('status', BloodRequestStatus::values())
                 ->default(BloodRequestStatus::PENDING->value)
                 ->index();
             $table->text('reason')->nullable();
+            $table->string('relationship_patient')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
