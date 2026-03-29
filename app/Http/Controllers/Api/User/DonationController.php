@@ -175,6 +175,7 @@ class DonationController extends Controller
             $data['created_by'] = auth()->id();
             $data['blood_group'] = $donor->blood_group;
             $data['status'] = 'pending';
+            $data['units_donated'] = 1;
 
             $donation = Donation::create($data);
 

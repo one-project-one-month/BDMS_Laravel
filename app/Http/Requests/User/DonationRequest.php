@@ -19,7 +19,6 @@ class DonationRequest extends BaseFormRequest
         $this->merge([
             'hospital_id' => $this->hospitalId,
             'blood_request_id' => $this->bloodRequestId,
-            'units_donated' => $this->unitsDonated,
             'donation_date' => $this->donationDate,
         ]);
     }
@@ -34,7 +33,6 @@ class DonationRequest extends BaseFormRequest
         return [
             'hospital_id' => 'required|exists:hospitals,id',
             'blood_request_id' => 'nullable|exists:blood_requests,id',
-            'units_donated' => 'required|integer|min:1',
             'donation_date' => 'required|date|after_or_equal:today',
             'remarks' => 'nullable|string',
         ];
