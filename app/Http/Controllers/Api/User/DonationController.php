@@ -148,11 +148,11 @@ class DonationController extends Controller
                 return $this->errorResponse("Donor profile not found.", 422);
             }
 
-            $hasPendingRequest = Donation::where('donor_id', $donor->id)
-                ->where('status', 'pending')
+            $hasCompleteRequest = Donation::where('donor_id', $donor->id)
+                ->where('status', 'completed')
                 ->exists();
 
-            if ($hasPendingRequest) {
+            if (!$hasCompleteRequest) {
                 return $this->errorResponse(
                     "You already have a pending donation request. Please wait for admin approval.",
                     422
