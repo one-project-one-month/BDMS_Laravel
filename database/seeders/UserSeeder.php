@@ -76,5 +76,19 @@ class UserSeeder extends Seeder
                 ]);
             }
         }
+
+        # without donor profile
+        for ($i = 10; $i > 5; $i--) {
+            $user = User::firstOrCreate(
+                ['email' => "user{$i}@bdms.com"],
+                [
+                    'role_id' => $userRole->id,
+                    'hospital_id' => $hospitals->random()->id,
+                    'user_name' => "Donor User {$i}",
+                    'password' => bcrypt('password123'),
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }
