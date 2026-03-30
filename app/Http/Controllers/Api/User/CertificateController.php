@@ -89,6 +89,10 @@ class CertificateController extends Controller
     public function show($userId, $id)
     {
         try {
+            if ((int) auth()->id() !== (int) $userId) {
+                return $this->errorResponse('Unauthorized access to this profile.', 403);
+            }
+
             $certificate = Certificate::with(['users'])
                 ->where([
                     'user_id' => $userId,
