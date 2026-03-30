@@ -31,7 +31,6 @@ class ProfileDonorRequest extends BaseFormRequest
             'last_donation_date' => $this->lastDonationDate?->format('Y-m-d'),
             'emergency_contact' => $this->emergencyContact,
             'emergency_phone' => $this->emergencyPhone,
-            'is_active' => $this->isActive,
         ]);
     }
 
@@ -48,7 +47,6 @@ class ProfileDonorRequest extends BaseFormRequest
             'emergency_contact' => 'required|string|max:255',
             'emergency_phone' => 'required|string|max:20',
             'address' => 'required|string',
-            'is_active' => 'boolean',
         ];
     }
 }
