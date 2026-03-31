@@ -146,14 +146,20 @@ This document lists all API endpoints for the Blood Donation Management System.
 | ------ | -------- | ----------------------- | ---- |
 | GET    | `/home`  | Get user home page data |      |
 
+## ⛺ Dashboard APIs
+
+| Method | Endpoint         | Description                  | Note |
+| ------ | ---------------- | ---------------------------- | ---- |
+| GET    | `user-dashboard` | Get user dashboard page data |      |
+
 ## 🙍‍♂️ Profiles APIs
 
-| Method | Endpoint                 | Description         | Note |
-| ------ | ------------------------ | ------------------- | ---- |
-| GET    | `/users/{userId}`        | Get user profiles   |      |
-| PUT    | `/users/{userId}`        | Update user profile |      |
-| GET    | `/users/{userId}/donors` | GET donor detail    |      |
-| POST   | `/users/{userId}/donors` | Create donor        |      |
+| Method | Endpoint                | Description         | Note |
+| ------ | ----------------------- | ------------------- | ---- |
+| GET    | `/user/{userId}`        | Get user profiles   |      |
+| PUT    | `/user/{userId}`        | Update user profile |      |
+| GET    | `/user/{userId}/donors` | GET donor detail    |      |
+| POST   | `/user/{userId}/donors` | Create donor        |      |
 
 ---
 
@@ -175,7 +181,7 @@ This document lists all API endpoints for the Blood Donation Management System.
 | GET    | `/{userId}/blood-requests`      | Get user all blood request    |      |
 | POST   | `/{userId}/blood-requests`      | Create blood request          |      |
 | GET    | `/{userId}/blood-requests/{id}` | Get user blood request Detail |      |
-| PATCH  | `/{userId}/blood-requests/{id}` | Cancel blood request          |      |
+| PATCH  | `/blood-requests/{id}/cancel`   | Cancel blood request          |      |
 
 ---
 
