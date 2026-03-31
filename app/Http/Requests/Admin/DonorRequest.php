@@ -8,6 +8,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Exists;
+
 
 class DonorRequest extends FormRequest
 {
@@ -47,40 +49,17 @@ class DonorRequest extends FormRequest
      */
     public function rules(): array
     {
-        // $donorId = $this->route('id') ? $this->route('id')->id : null;
-        $donorId = $this->route('donor');
-
         return [
-            'user_id'             => [
-                'required',
-                'exists:users,id',
-                Rule::unique('donors', 'user_id')->ignore($donorId),
-            ],
-
-            'nrc_no'              => [
-                'required',
-                'string',
-                Rule::unique('donors', 'nrc_no')->ignore($donorId),
-            ],
-            'date_of_birth'       => 'required|date',
-            'gender'              => 'required|in:' . implode(',', Gender::values()),
-            'blood_group'         => 'required|in:' . implode(',', BloodGroup::values()),
-            'weight'              => 'required|numeric|min:1',
-            'last_donation_date'  => 'nullable|date',
-            'remarks'             => 'nullable|string',
-            'emergency_contact'   => 'required|string|max:255',
-            'emergency_phone'     => 'required|string|max:20',
-            'address'             => 'required|string',
-            'is_active'           => 'boolean',
+            'hospital_id' => 'required|exists:hospitals,id',
+            'blood_group' => 'required|in:' . implode(',',BloodGroup::values()),
+            'units_donated' => 'required|integer|min:1|max:5',
+            'donation_date' => 'required|date',
+            'remarks'       => 'nummable|string',
         ];
+           
+            
     }
 
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422));
-    }
+
+        
 }

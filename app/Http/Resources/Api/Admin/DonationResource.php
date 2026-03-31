@@ -26,7 +26,7 @@ class DonationResource extends JsonResource
             'bloodRequest' => $this->whenLoaded('bloodRequest'),
             'donor' => $this->whenLoaded('donor'),
             'createdBy' => $this->whenLoaded('creator'),
-            'approvBy' => $this->whenLoaded('approver'),
+            'approvedBy' => $this->whenLoaded('approver'),
 
             'donationDate' => $this->donation_date?->format('Y-m-d'),
             'approvedAt' => $this->approved_at?->format('Y-m-d'),

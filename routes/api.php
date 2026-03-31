@@ -6,10 +6,11 @@ use App\Http\Controllers\Api\Admin\DonorController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\DonationController;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\ProfileDonorController;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function () {
@@ -22,6 +23,14 @@ Route::prefix('v1/auth')->group(function () {
         Route::post('logout-all', [AuthController::class, 'logoutAll']);
     });
 });
+
+ // Donation
+Route::prefix('{userId}/donations')->group(function () {
+    Route::get('/', [DonationController::class, 'index']);
+    Route::post( '/', [DonationController::class, 'store']);
+    Role::patch('/{id}', [DonationController::class, 'cancle']);
+});
+
 
 Route::prefix('v1/')->group(function () {
 
