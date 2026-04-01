@@ -15,12 +15,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = auth()->user()->load('donor');
         $donor = $user->donor;
 
-        $upcomingAppointment = Appointment::with('hospital:id,name')
+        $upcomingAppointment = Appointment::with('hospital')
             ->where('user_id', $user->id)
-            ->where('appointment_date', '>=', Carbon::today())
+            ->where('appointment_date', '>=', now())
             ->whereIn('status', [
                 AppointmentStatus::SCHEDULED->value,
                 AppointmentStatus::CONFIRMED->value
@@ -28,17 +28,17 @@ class DashboardController extends Controller
             ->orderBy('appointment_date', 'asc')
             ->first();
 
-        $urgentBloodRequest = BloodRequest::where('urgency', Urgency::EMERGENCY->value)
+        // Urgent Blood Request
+        $urgentBloodRequest = BloodRequest::with('hospital')
+            ->where('urgency', Urgency::EMERGENCY->value)
             ->where('status', BloodRequestStatus::PENDING->value)
             ->latest()
             ->first();
 
-        $totalDonations = 0;
-        if ($donor) {
-            $totalDonations = Donation::where('donor_id', $donor->id)
-                ->where('status', 'completed')
-                ->count();
-        }
+        // Statistics & Donation Logic
+        $totalDonations = $donor
+            ? Donation::where('donor_id', $donor->id)->where('status', 'completed')->count()
+            : 0;
 
         $totalRequests = BloodRequest::where('user_id', $user->id)->count();
 
