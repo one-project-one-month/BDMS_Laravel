@@ -50,7 +50,7 @@ class DashboardController extends Controller
         if ($donor && $donor->last_donation_date) {
             $lastDonation = Carbon::parse($donor->last_donation_date);
             $nextDate = $lastDonation->copy()->addDays(90);
-            $nextDonationDate = $nextDate->format('Y-m-d');
+            $nextDonationDate = $nextDate?->format('Y-m-d');
 
             if (now()->lt($nextDate)) {
                 $isEligible = false;
@@ -72,7 +72,7 @@ class DashboardController extends Controller
                     'next_eligible_date' => $nextDonationDate,
                     'is_eligible' => $isEligible,
                     'days_remaining' => $daysRemaining,
-                    'last_donation_date' => $donor?->last_donation_date ? Carbon::parse($donor->last_donation_date)->format('Y-m-d') : null
+                    'last_donation_date' => $donor?->last_donation_date
                 ]
             ]
         ], 200);

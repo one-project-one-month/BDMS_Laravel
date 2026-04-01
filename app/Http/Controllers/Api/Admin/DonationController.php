@@ -185,7 +185,11 @@ class DonationController extends Controller
         if ($request->status === 'completed') {
             return DB::transaction(function () use ($donation) {
 
+                $donor = auth()->user()->donor();
+
                 $donation->update(['status' => 'completed']);
+
+                $donor->update(['last_donation_date' => now()]);
 
                 $donation->donor->update([
                     'last_donation_date' => $donation->donation_date,
