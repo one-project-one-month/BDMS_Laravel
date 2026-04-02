@@ -124,7 +124,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if (!Auth::attempt($credentials)) {
-            return $this->errorResponse('Invalid credentials', 401);
+            return $this->errorResponse('Invalid email or password!', 401);
         }
 
         $user = Auth::user();
