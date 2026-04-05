@@ -15,6 +15,19 @@ class BloodRequestRequest extends BaseFormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'hospital_id' => $this->hospitalId,
+            'patient_name' => $this->patientName,
+            'blood_group' => $this->bloodGroup,
+            'units_required' => $this->unitsRequired,
+            'contact_phone' => $this->contactPhone,
+            'urgency' => $this->urgency,
+            'required_date' => $this->requiredDate,
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
