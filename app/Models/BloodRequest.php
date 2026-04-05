@@ -142,12 +142,4 @@ class BloodRequest extends Model
             'status' => BloodRequestStatus::FULFILLED,
         ]);
     }
-
-    protected static function booted()
-    {
-        static::creating(function ($model) {
-            $model->blood_request_code = 'BR-' . strtoupper(uniqid());
-        });
-    }
-
 }
