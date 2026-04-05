@@ -83,11 +83,20 @@ class BloodRequestController extends Controller
     public function store(BloodRequestRequest $request)
     {
         try {
-            $data = $request->validated();
+            $validated = $request->validated();
 
-            $data['user_id'] = auth()->id();
-
-            $bloodRequest = BloodRequest::create($data);
+            $bloodRequest = BloodRequest::create([
+                'user_id' => auth()->id(),
+                'hospital_id' => $validated['hospital_id'],
+                'patient_name' => $validated['patient_name'],
+                'blood_group' => $validated['blood_group'],
+                'units_required' => $validated['units_required'],
+                'contact_phone' => $validated['contact_phone'],
+                'urgency' => $validated['urgency'],
+                'required_date' => $validated['required_date'],
+                'reason' => $validated['reason'],
+                'status' => BloodRequestStatus::PENDING,
+            ]);
 
             return $this->successResponse(
                 "Blood Request created successfully",
@@ -95,8 +104,8 @@ class BloodRequestController extends Controller
                 201
             );
         } catch (\Exception $e) {
-            Log::error("Blood Request Creation Failed: " . $e->getMessage());
-            return $this->errorResponse("Something went wrong while creating the request.", 500);
+            Log::error("Blood Request Error: " . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
