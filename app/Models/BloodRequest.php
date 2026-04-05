@@ -18,7 +18,6 @@ class BloodRequest extends Model
     protected $fillable = [
         'user_id',
         'hospital_id',
-        'blood_request_code',
         'patient_name',
         'blood_group',
         'units_required',

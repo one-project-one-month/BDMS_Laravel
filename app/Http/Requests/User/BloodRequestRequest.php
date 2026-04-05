@@ -52,7 +52,7 @@ class BloodRequestRequest extends BaseFormRequest
                 'units_required' => ['required', 'integer'],
                 'contact_phone' => ['required', 'string'],
                 'urgency' => ['required', Rule::in(\App\Enums\Urgency::values())],
-                'required_date' => ['required', 'date', 'after_or_equal:today'],
+                'required_date' => ['required', 'date_format:d-m-Y', 'after_or_equal:today'],
                 'reason' => ['required', 'string']
             ];
     }
